@@ -50,4 +50,10 @@ system folder.
 14. php artisan db:seed
 ```
 
+> You will need also the redis server what will run in the background while you wish to use the bot
+
+```
+15. brew install redis
+```
+
 ?. php composer.phar require andreas-glaser/poloniex-php-client dev-master
