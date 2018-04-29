@@ -9,3 +9,12 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 .env
+app/Traits/Mailer.php
+/venv
+/lib
+/bin
+/include
+pip-selfcheck.json
+.Python
+dump.rdb
+go-pear.phar
