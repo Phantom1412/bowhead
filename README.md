@@ -28,6 +28,7 @@ this in venv then all this will be installed into folder other hand it will go i
 system folder.
 
 ### Set up commands
+```
 1. https://github.com/deakzsolt/bowhead.git2. cd bowhead
 2. php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 3. php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
@@ -36,10 +37,17 @@ system folder.
 6. php composer.phar update
 7. curl -O http://pear.php.net/go-pear.phar
 8. sudo php -d detect_unicode=0 go-pear.phar
-9. cp .env.example .env
-10. php artisan key:generate
-11. 
+9. sudo pecl install trader
+10. cp .env.example .env
+11. php artisan key:generate
+12. mysql -u root -p bowhead < app/Scripts/DBdump.sql
+```
 
-5. php artisan migrate
-6. php artisan db:seed
+>Before you start the migrate setup in .env file connection to you Database, and then continue
+
+```
+13. php artisan migrate
+14. php artisan db:seed
+```
+
 ?. php composer.phar require andreas-glaser/poloniex-php-client dev-master
