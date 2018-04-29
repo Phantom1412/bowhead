@@ -46,12 +46,11 @@ class SignalsExampleCommand extends Command {
      *
      *  this is the part of the command that executes.
      */
-    public function handle()
-    {
+    public function handle() {
         echo "PRESS 'q' TO QUIT AND CLOSE ALL POSITIONS\n\n\n";
         stream_set_blocking(STDIN, 0);
 
-        while(1){
+        while(1) {
 			$instruments = ['BTC/USD'];
 			
 			$util        = new Util\BrokersUtil();
@@ -61,14 +60,17 @@ class SignalsExampleCommand extends Command {
 			$this->signals(false, false, $instruments);
 
 			$back = $this->signals(1,2, $instruments);
-			print_r($back);
+	        foreach ($back as $k => $val) {
+		        echo $k." ".$val."\n\n";
+	        } // foreach
+	        echo "------------------------\n\n";
+//			print_r($back);
 
 			sleep(5);
-		}
-
+		} // while
 
         return null;
-    }
+    } // handle
 
 
 }
