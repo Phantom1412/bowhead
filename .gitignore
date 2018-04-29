@@ -18,3 +18,4 @@ pip-selfcheck.json
 .Python
 dump.rdb
 go-pear.phar
+composer.phar
