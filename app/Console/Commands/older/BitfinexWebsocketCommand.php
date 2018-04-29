@@ -98,7 +98,12 @@ class BitfinexWebsocketCommand extends Command
             $asks = \Cache::get('bitfinex::book::ask');
             $asks = array_shift($asks);
             if (is_array($asks)) {
-                list($price, $amt) = each($asks);
+//            	TODO each is deprecated in php 7.2 check is this a good solution to take the last in array!
+//                list($price, $amt) = each($asks);
+	            $price = '';
+	            foreach ($asks as $key => $val) {
+		            $price = $key;
+	            };
                 $askPrice = (($askPrice > $price) ? $askPrice : $price);
             }else {
                 echo "ASK error!\n";
@@ -108,8 +113,13 @@ class BitfinexWebsocketCommand extends Command
             $bids = \Cache::get('bitfinex::book::bid');
             $bids = array_shift($bids);
             if (is_array($bids)) {
-                list($price, $amt) = each($bids);
-                $bidPrice = (($bidPrice > $price) ? $bidPrice : $price);
+//            	TODO each is deprecated in php 7.2 check is this a good solution to take the last in array!
+//                list($price, $amt) = each($bids);
+	            $bids = '';
+	            foreach ($asks as $key => $val) {
+		            $bids = $key;
+	            };
+                $bidPrice = (($bidPrice > $bids) ? $bidPrice : $bids);
             } else {
                 echo "BID error!\n";
             }
@@ -313,7 +323,7 @@ class BitfinexWebsocketCommand extends Command
 
                             $this->manageCacheArray('bitfinex::ticker::last_price_diff::array', ($data[7]-$last));
                             #print_r($data);
-                            $this->markOHLC($data, 1, 'BTC/USD');
+//                            $this->markOHLC($data, 1, 'BTC/USD');
                         }
 
                         /** -------------- TRADE -------------- */
@@ -356,8 +366,8 @@ class BitfinexWebsocketCommand extends Command
                     $averages =  $this->bookAverage();
                     #print_r($this->bookAverage());
 
-                    #echo microtime(). ' '. $averages['lastPrice'] . "\n";
-                    #echo "Received: {$msg}\n";
+                    echo microtime(). ' '. $averages['lastPrice'] . "\n";
+                    echo "Received: {$msg}\n";
 
                 });
 
