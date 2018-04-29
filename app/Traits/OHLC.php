@@ -162,7 +162,7 @@ trait OHLC
             $ret = $this->organizePairData($results, $limit);
         }
 
-        \Cache::put($key, $ret, 2);
-        return $ret;
+        \Cache::put($key, array_first($ret), 2);
+        return array_first($ret);
     }
 }
