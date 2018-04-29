@@ -17,8 +17,8 @@ class Kernel extends ConsoleKernel
         Commands\A_SetupCommand::class,
         Commands\DataRunnerCcxtCommand::class,
         Commands\DataRunnerCoinigyCommand::class,
-        #Commands\BitfinexWebsocketCommand::class,
-        #Commands\CoinbaseWebsocketCommand::class,
+        Commands\BitfinexWebsocketCommand::class,
+        Commands\CoinbaseWebsocketCommand::class,
         #Commands\OandaStreamCommand::class,
         Commands\ExampleUsageCommand::class,
         Commands\ExampleCommand::class,
@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         #$schedule->command('bowhead:fx_stream')->withoutOverlapping()->everyMinute();
-        $schedule->command('bowhead:datarunner_coinigy')->withoutOverlapping()->everyMinute();
+//        $schedule->command('bowhead:datarunner_coinigy')->withoutOverlapping()->everyMinute();
         $schedule->command('bowhead:datarunner_ccxt')->withoutOverlapping()->everyMinute();
     }
 
