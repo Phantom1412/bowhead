@@ -644,8 +644,9 @@ class Indicators
         $prior_red_candle   = ($prev_red_candle || $prior_red_candle ? true : false);
         $prior_green_candle = ($prev_green_candle || $prior_green_candle ? true : false);
 
-        // TODO this is useful for testing
-        /**
+	    // TODO this is useful for testing
+	    $console = new Console();
+
         $line = "";
         $line .= "(" . ($prior_above        ? $console->colorize('prior_above', 'light_green') : $console->colorize('prior_above', 'dark'));
         $line .= " " . ($prior_red_candle   ? $console->colorize('prior_red', 'light_green')   : $console->colorize('prior_red', 'dark'));
@@ -658,7 +659,6 @@ class Indicators
         $line .= " " . ($red_candle         ? $console->colorize('red', 'light_red')           : $console->colorize('red', 'dark'));
         $line .= ")";
         echo "\n$line";
-        //*/
 
         if (($prior_above && $prior_red_candle) && ($below && $green_candle)) {
             /** SAR is below a NEW green candle. */

@@ -132,6 +132,7 @@ class ExampleCommand extends Command
                 /**
                  *   THIS SECTION IS FOR DISPLAY
                  */
+	            $indicators->fsar($instrument, $recentData);
                 $line = $console->colorize(" Signals for $instrument:");
                 $line .= $console->colorize(str_pad("cci:$cci", 11), $this->doColor($cci));
                 $line .= $console->colorize(str_pad("cmo:$cmo", 9), $this->doColor($cmo));
@@ -139,6 +140,7 @@ class ExampleCommand extends Command
                 $line .= ($overbought ? $console->colorize(' overbought', 'light_red') : $console->colorize(' overbought', 'dark'));
                 $line .= ($underbought ? $console->colorize(' underbought', 'light_green') : $console->colorize(' underbought', 'dark'));
                 echo "$line";
+
                 /**
                  *  DISPLAY DONE
                  */
