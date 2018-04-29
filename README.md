@@ -56,4 +56,32 @@ system folder.
 15. brew install redis
 ```
 
-?. php composer.phar require andreas-glaser/poloniex-php-client dev-master
+# How to start/use
+
+> Before you start ot execute the commands start the redis server and leave it running in the background.
+Type in the following command to start it:
+```
+redis-server
+```
+
+If you have filled the API's in your .env file then you should start to see data flowing into the
+mysql database under the "bh_tickers". This way the cron is importing the streaming data so you don't
+need to use the fx_stream to import the data.
+
+Before you start playing around check with the following command is all set:
+```
+php artisan bowhead:example_usage
+```
+This list should show you all green at the end (check the indicator for weekly it drops error)
+
+Now we can move to test the candles with the following command:
+```
+php artisan bowhead:test_candles
+```
+
+TODO check do we need this API handler for Poloniex
+???. php composer.phar require andreas-glaser/poloniex-php-client dev-master
+
+TODO check the multidimensional array handler not to use only first from array
+
+TODO test strategies and go trough
