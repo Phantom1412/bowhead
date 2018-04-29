@@ -53,14 +53,24 @@ class SignalsExampleCommand extends Command {
         while(1) {
 			$instruments = ['BTC/USD'];
 			
-			$util        = new Util\BrokersUtil();
-			$console     = new \Bowhead\Util\Console();
-			$indicators  = new \Bowhead\Util\Indicators();
+//			$util        = new Util\BrokersUtil();
+//			$console     = new \Bowhead\Util\Console();
+//			$indicators  = new \Bowhead\Util\Indicators();
 
 			$this->signals(false, false, $instruments);
 
 			$back = $this->signals(1,2, $instruments);
+
 	        foreach ($back as $k => $val) {
+
+	        	if ($val !== 'NONE') {
+			        DB::table('bh_indicators')->insert([
+				        ['pair' => $k,
+				        'signal' => $val,
+				        'inserted' => now()]
+				        ]);
+		        } // if
+
 		        echo $k." ".$val."\n\n";
 	        } // foreach
 	        echo "------------------------\n\n";
