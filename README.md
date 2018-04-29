@@ -58,6 +58,7 @@ system folder.
 
 # How to start/use
 
+### Start Redis Server 
 > Before you start ot execute the commands start the redis server and leave it running in the background.
 Type in the following command to start it:
 ```
@@ -68,16 +69,26 @@ If you have filled the API's in your .env file then you should start to see data
 mysql database under the "bh_tickers". This way the cron is importing the streaming data so you don't
 need to use the fx_stream to import the data.
 
+### Example usage
 Before you start playing around check with the following command is all set:
 ```
 php artisan bowhead:example_usage
 ```
 This list should show you all green at the end (check the indicator for weekly it drops error)
 
+### Testing Candles
 Now we can move to test the candles with the following command:
 ```
 php artisan bowhead:test_candles
 ```
+
+### Check Signal
+We wish to see how the basic signals work and do they drop error anywhere in the code. For this test use this command:
+```
+php artisan bowhead:example_signals
+```
+Should show you green,red for BTC-USD pair.
+
 
 TODO check do we need this API handler for Poloniex
 ???. php composer.phar require andreas-glaser/poloniex-php-client dev-master
