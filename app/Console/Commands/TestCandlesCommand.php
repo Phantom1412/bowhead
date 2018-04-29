@@ -48,12 +48,12 @@ class TestCandlesCommand extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         $console = new Console();
-        $ind = new Indicators();
-        $data = $this->getRecentData('AUD_USD',150);
-        $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
+//        $ind = new Indicators();
+//        $data = $this->getRecentData('AUD_USD',150);
+//        $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
+	    $instruments = ['BTC/USD','ETH/BTC','LTC/BTC'];
 
         while(1) {
             $all = [];
@@ -62,12 +62,12 @@ class TestCandlesCommand extends Command
                 $cand = $this->candles->allCandles($instrument, $data);
                 $candles[$instrument] = $cand['current'] ?? [];
                 $all = array_merge($all, $cand['current'] ?? []);
-            }
+            } // foreach
             foreach($instruments as $instrument) {
                 foreach ($all as $allof => $val) {
                     $candles[$instrument][$allof] = $candles[$instrument][$allof] ?? 0;
-                }
-            }
+                } // foreach
+            } // foreach
             #print_r($all);
 
             $lines = [];
@@ -78,17 +78,17 @@ class TestCandlesCommand extends Command
                 foreach ($all as $candle => $val) {
                     if (!isset($lines[$candle])) {
                         $lines[$candle] = '';
-                    }
+                    } // if
                     $color = ($candles[$instrument][$candle] > 0 ? 'bg_green' : ($candles[$instrument][$candle] < 0 ? 'bg_red' : 'bg_black'));
                     $lines[$candle] .= $console->colorize(str_pad($candle, 17), $color);
-                }
-            }
+                } // foreach
+            } // foreach
             echo "\n\n" . $console->colorize(@$lines['top']);
             foreach ($all as $candle => $val) {
                 echo "\n" . $lines[$candle];
-            }
+            } // foreach
             echo "\n\n";
             sleep(5);
-        }
+        } // while
     }
 }
