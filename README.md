@@ -15,16 +15,31 @@ followed as it is or use the folder name what you have created for this project.
 On OSX you have built in apach server and the location is in /Library/WebServer/Documents/.
 Here create a folder what you wish but for this tutorial we will use bowhead folder.
 
+If you don't wish to install all requirements into the osx main system create a virtual 
+environment. Here is a nice tutorial what you need to set this up:
+http://sourabhbajaj.com/mac-setup/Python/virtualenv.html
+If you have other versions of python then setup the venv to your folder where is the bowhead set.
+This is the command what will take your built in python2.7 (check what python version do you have)
+and set it to the bowhead folder:
+virtualenv --python=/usr/bin/python2.7 /Library/WebServer/Documents/bowhead
+
+When this is set you can start to follow the commands. Please note that if you are running 
+this in venv then all this will be installed into folder other hand it will go into
+system folder.
+
 ### Set up commands
-1. https://github.com/deakzsolt/bowhead.git
-2. cd bowhead
-3. composer update
-4. cp .env.example .env (insert here your api keys)
-5. php artisan key:generate
-6. php artisan migrate
-7. php artisan db:seed
-8. php composer.phar require andreas-glaser/poloniex-php-client dev-master 
-add in Poloniex API creator Andreas
+1. https://github.com/deakzsolt/bowhead.git2. cd bowhead
+2. php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+3. php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+4. php composer-setup.php
+5. php -r "unlink('composer-setup.php');"
+6. php composer.phar update
+7. curl -O http://pear.php.net/go-pear.phar
+8. sudo php -d detect_unicode=0 go-pear.phar
+9. cp .env.example .env
+10. php artisan key:generate
+11. 
 
-
-
+5. php artisan migrate
+6. php artisan db:seed
+?. php composer.phar require andreas-glaser/poloniex-php-client dev-master
