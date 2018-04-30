@@ -89,10 +89,17 @@ php artisan bowhead:example_signals
 ```
 Should show you green,red for BTC-USD pair.
 
+### Test Strategies
+> This now uses the FX data for fiat currency will be rebuild for crypto
+
+Test strategies and set here what is your best strategy. Using without test parameter will use live trading.
+```
+php artisan bowhead:test_strategies test
+```
 
 TODO check do we need this API handler for Poloniex
 ???. php composer.phar require andreas-glaser/poloniex-php-client dev-master
 
 TODO check the multidimensional array handler not to use only first from array
 
-TODO test strategies and go trough
+TODO test strategies uses FX streaming try to change to crypto

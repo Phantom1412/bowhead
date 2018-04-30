@@ -101,7 +101,7 @@ class GdaxScalperCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         $this->coinbase   = new Util\Coinbase();
         $this->console    = new Console();
@@ -117,7 +117,7 @@ class GdaxScalperCommand extends Command
 
 
         echo $this->console->colorize("UPDATING RECENT Open, High, Low, Close data\n");
-        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC-USD');
+        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC/USD');
         $totalsize = $trades = [];
         $total = count($_trades);
         $i = 1;
@@ -131,7 +131,7 @@ class GdaxScalperCommand extends Command
             $ticker['timeid'] = $timeid;
             $ticker[7] = $tr['price'];
             $ticker[8] = $totalsize[$timeid] ?? 0;
-            $this->markOHLC($ticker, 1, $this->instrument);
+//            $this->markOHLC($ticker, 1, $this->instrument);
             $this->console->progressBar($i, $total);
             $i++;
         }
@@ -169,41 +169,44 @@ class GdaxScalperCommand extends Command
             $ticker = [];
             $ticker[7] = $_ticker['price'];
             $ticker[8] = $_ticker['volume'];
-            $this->markOHLC($ticker, 1, $this->instrument);
+//            $this->markOHLC($ticker, 1, $this->instrument);
             $data = $this->getRecentData($this->instrument, 150);
+	//	        var_dump($data);
+            if (!empty($data)) {
+	            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
+	            /**
+	             *  If SAR is under a GREEN candle and STOCH crosses the lower line going up.
+	             *  Lets try to catch a dip before the upswing.
+	             *
+	             *  TODO: we need to add in tests for if we have the $ and/or if we have the BTC
+	             */
+	            if ($sar_stoch_sig > 1) {
+		            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
+		            $price_move = $_ticker['price'] - 0.75;
+//                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
+	            }
 
-            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
-            /**
-             *  If SAR is under a GREEN candle and STOCH crosses the lower line going up.
-             *  Lets try to catch a dip before the upswing.
-             *
-             *  TODO: we need to add in tests for if we have the $ and/or if we have the BTC
-             */
-            if ($sar_stoch_sig > 1) {
-                echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
-                $price_move = $_ticker['price'] - 0.75;
-                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
-            }
+	            /** if the opposite, then try to scalp in the other direction */
+	            if ($sar_stoch_sig > -1) {
+		            echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
+		            $price_move = $_ticker['price'] + 0.75;
+//                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
+	            }
 
-            /** if the opposite, then try to scalp in the other direction */
-            if ($sar_stoch_sig > -1) {
-                echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
-                $price_move = $_ticker['price'] + 0.75;
-                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
-            }
-
-            /**
-             *   TODO: continue with other strategies.
-             *   TODO: keep stats and keep track of orders in the database.
-             */
-
+	            /**
+	             *   TODO: continue with other strategies.
+	             *   TODO: keep stats and keep track of orders in the database.
+	             */
+            } else {
+	            echo $this->console->colorize("Not enough data in the database or no data at all!\n",'red');
+	            exit();
+            } // if
 
             sleep(5);
         }
     }
 
-    private function update_state()
-    {
+    private function update_state() {
         echo $this->console->colorize("Updating...\n", 'reverse');
         $this->orders = $this->coinbase->listorders();
 
@@ -213,18 +216,22 @@ class GdaxScalperCommand extends Command
         $this->bidsize = $this->book['bids'][0][1];
         $this->asksize = $this->book['asks'][0][1];
 
+//        TODO transfer Balance symbol and the $key contains the currency
         $bals = $this->coinbase->get_balances();
         foreach($bals as $key => $bal) {
-            $this->balances[$key] = $bal['available'];
-        }
-    }
+//        	Show none 0 balance
+        	if (empty($bal['available'])) {
+		        $this->balances[$key] = $bal['available'];
+	        } // if
+
+        } // foreach
+    } // update_state
 
     /**
      * @return mixed
      */
-    private function getBook($instrument)
-    {
+    private function getBook($instrument) {
         return $this->coinbase->get_endpoint('book', null, '?level=2', $instrument);
-    }
+    } // getBook
 
 }
