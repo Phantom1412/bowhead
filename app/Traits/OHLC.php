@@ -47,7 +47,7 @@ trait OHLC
      *
      * @return array
      */
-    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='1m', $returnRS=false)
+    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='5m', $returnRS=false)
     {
         /**
          *  we need to cache this as many strategies will be

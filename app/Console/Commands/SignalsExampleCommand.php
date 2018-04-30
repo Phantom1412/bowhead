@@ -51,14 +51,13 @@ class SignalsExampleCommand extends Command {
         stream_set_blocking(STDIN, 0);
 
         while(1) {
-			$instruments = ['BTC/USD'];
+			$instruments = ['BTC/USD','ETH/BTC','LTC/BTC'];
 			
 //			$util        = new Util\BrokersUtil();
 //			$console     = new \Bowhead\Util\Console();
 //			$indicators  = new \Bowhead\Util\Indicators();
 
 			$this->signals(false, false, $instruments);
-
 			$back = $this->signals(1,2, $instruments);
 
 	        foreach ($back as $k => $val) {
@@ -71,9 +70,9 @@ class SignalsExampleCommand extends Command {
 				        ]);
 		        } // if
 
-		        echo $k." ".$val."\n\n";
+		        echo $k." ".$val."\n";
 	        } // foreach
-	        echo "------------------------\n\n";
+	        echo "------------------------------------------------\n\n";
 //			print_r($back);
 
 			sleep(5);
