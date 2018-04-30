@@ -409,6 +409,8 @@ class Coinbase
         $timestamp  = time();
         $key = $this->key;
         $passphrase = $this->passphrase;
+        // In some cases the pair is send trough as BTC/USD and we need as BTC-USD clear this and all works!
+	    $instrument = strpos($instrument,'/') !== false ? str_replace('/','-',$instrument) : $instrument;
 
         extract($this->endpoints[$point]); // provide method and uri
         # TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
@@ -491,15 +493,14 @@ class Coinbase
             $error = curl_errno($curl);
             $message = curl_error($curl);
             curl_close($curl);
-            #error_log('NETWORK ERROR', $message . " (" . $error . ")");
+            error_log('NETWORK ERROR:: ', $message . " (" . $error . ")");
         }
 
         $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
-
         if($statusCode != 200) {
             print_r($response);
-            error_log('STATUS CODE', $statusCode . ' ' . $response);
+            error_log('STATUS CODE:: ', $statusCode . ' ' . $response);
         }
         return array( "statusCode" => $statusCode, "body" => $response );
     }
