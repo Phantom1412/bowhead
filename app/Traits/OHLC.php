@@ -162,6 +162,7 @@ trait OHLC
             $ret = $this->organizePairData($results, $limit);
         }
 
+//        TODO set here or in organizePairData the exchange ID for further analising as in all it expects assoc array
         \Cache::put($key, array_first($ret), 2);
         return array_first($ret);
     }
