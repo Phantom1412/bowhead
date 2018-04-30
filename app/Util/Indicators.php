@@ -1073,6 +1073,7 @@ class Indicators
         if (empty($data)) {
             $data = $this->getRecentData($pair);
         }
+//        TODO this function expects 1 parameter 2 given!
         $hts = trader_ht_sine($data['open'],$data['close']);
         $dcsine     = array_pop($hts[1]);
         $p_dcsine   = array_pop($hts[1]);

@@ -43,15 +43,18 @@ class TestTrendsCommand extends Command
     {
         $console = new Console();
         $ind = new Indicators();
-        $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
+//        $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
+	    $instruments = ['BTC/USD','ETH/BTC','LTC/BTC'];
 
         while(1) {
-            $all = ['httc','htl','hts','mmi'];
+//        	TODO hts is wrongly coded find solution!
+//            $all = ['httc','htl','hts','mmi'];
+	        $all = ['httc','htl','mmi'];
             foreach($instruments as $instrument) {
                 $data = $this->getRecentData($instrument,200);
                 $trends[$instrument]['httc'] = $ind->httc($instrument, $data);      # Hilbert Transform - Trend vs Cycle Mode
                 $trends[$instrument]['htl']  = $ind->htl($instrument, $data);       # Hilbert Transform - Instantaneous Trendline
-                $trends[$instrument]['hts']  = $ind->hts($instrument, $data, true); # Hilbert Transform - Sinewave
+//                $trends[$instrument]['hts']  = $ind->hts($instrument, $data, true); # Hilbert Transform - Sinewave
                 $trends[$instrument]['mmi']  = $ind->mmi($instrument, $data);       # market meanness
             }
             $lines = [];
