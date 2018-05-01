@@ -152,6 +152,26 @@ class GdaxScalperCommand extends Command
          */
         while (1){
             $_ticker = $this->coinbase->get_endpoint('ticker',null,null,'BTC-USD');
+            $rates = $this->coinbase->get_endpoint('rates',null,null,'BTC-USD');
+//            var_dump($rates);
+//            die();
+            $_ticker['low'] = $rates[0][1];
+	        $_ticker['high'] = $rates[0][2];
+	        $_ticker['open'] = $rates[0][3];
+	        $_ticker['close'] = $rates[0][4];
+	        $_ticker['volume'] = $rates[0][5];
+//            TODO add this into the table so we can have a tracking from the demo account!
+//            var_dump($this->coinbase->get_endpoint('rates',null,null,'BTC-USD'));
+	        /**
+	         * use the 0 as that is the fresh insert
+	         * Returns
+	         * [ time, low, high, open, close, volume ],
+	         * [ 1415398768, 0.32, 4.2, 0.35, 4.2, 12.3 ],
+	         */
+//	        $time1 = 1525188720;
+//	        $time2 = 1525188540;
+//	        echo date('Y-m-d h:i:s',$time1)."\n";
+//	        echo date('Y-m-d h:i:s',$time2)."\n";
             $_orders = [];
             if (count($this->orders) > 0) {
                 echo $this->console->colorize("\nCurrent orders:\n");
@@ -167,12 +187,15 @@ class GdaxScalperCommand extends Command
                 }
             }
 
-            $ticker = [];
-            $ticker[7] = $_ticker['price'];
-            $ticker[8] = $_ticker['volume'];
+//            var_dump($_ticker);
+//            die();
+//            $ticker = [];
+//            $ticker[7] = $_ticker['price'];
+//            $ticker[8] = $_ticker['volume'];
+//            var_dump($ticker);
 
 //          TODO this tables are already updated if the cron is running
-//            $this->markOHLC($ticker, 1, $this->instrument);
+            $this->markOHLC($_ticker, $this->instrument);
 
 //	        TODO it might be that we are looking in the wrong table!
 //	        TODO getRecentData returns from bh_tickers and we might need bh_ohlcvs instead
@@ -199,6 +222,7 @@ class GdaxScalperCommand extends Command
 //            var_dump($data);
 
             if (!empty($data)) {
+//            	var_dump($ticker);
 	            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
 	            /**
 	             *  If SAR is under a GREEN candle and STOCH crosses the lower line going up.
@@ -259,8 +283,8 @@ class GdaxScalperCommand extends Command
         $this->bidsize = $this->book['bids'][0][1];
         $this->asksize = $this->book['asks'][0][1];
 
-        $bals = $this->coinbase->get_balances();
-        foreach($bals as $key => $bal) {
+        $balances = $this->coinbase->get_balances();
+        foreach($balances as $key => $bal) {
 //        	Show none 0 balance only
         	if (empty($bal['available'])) {
 		        $this->balances[$key] = $bal['available'];

@@ -17,41 +17,80 @@ trait OHLC {
 	 *
 	 * @return bool
 	 */
-	public function markOHLC($ticker, $bf = false, $bf_pair = 'BTC/USD',$excahnge_ID = null) {
+	public function markOHLC($ticker, $bf_pair = 'BTC/USD',$excahnge_ID = null) {
 
 		if (empty($excahnge_ID)) {
 			$excahnge_ID = env('DEFAULT_EXCHANGE_ID');
 		} // if
-
-		$now = time();
-		$timeid = date('YmdHis'); // 20170530152259 unique for date
-		$ctime = date('Y-m-d H:i:s');
-		if ($bf) {
-			/** Bitfinex websocked */
-			$last_price = $ticker[7];
-			$volume = $ticker[8];
-			$instrument = $bf_pair;
-
-			/** if timeid passed, we use it, otherwise use generated one.. */
-			$timeid = ($ticker['timeid'] ?? $timeid);
-		} else {
-			/** Oanda websocket */
-			$last_price = $ticker['tick']['bid'];
-			$instrument = $ticker['tick']['instrument'];
-			$volume = 0;
-		} // if
+		/**
+		 array(11) {
+		'trade_id' =>
+		int(1672682)
+		'price' =>
+		string(13) "8976.04000000"
+		'size' =>
+		string(10) "0.00500000"
+		'bid' =>
+		string(7) "8976.17"
+		'ask' =>
+		string(7) "8976.18"
+		'volume' =>
+		double(0.02)
+		'time' =>
+		string(27) "2018-05-01T19:11:00.238000Z"
+		'low' =>
+		double(8976.04)
+		'high' =>
+		double(8976.17)
+		'open' =>
+		double(8976.17)
+		'close' =>
+		double(8976.04)
+		}
+		 * DB data =>
+		 `bh_exchanges_id`,
+  `symbol`,
+  `timestamp`,
+  `datetime`,
+  `high`,
+  `low`,
+  `bid`,
+  `ask`,
+  `vwap`,
+  `open`,
+  `close`,
+  `first`,
+  `last`,
+  `change`,
+  `percentage`,
+  `average`,
+  `basevolume`,
+  `quotevolume`,
+  `created_at`,
+  `updated_at`,
+  `deleted_at`,
+*/
+		$price = $ticker['price'];
+		$bid = $ticker['bid'];
+		$ask = $ticker['ask'];
+		$low = $ticker['low'];
+		$high = $ticker['high'];
+		$open = $ticker['open'];
+		$close = $ticker['close'];
+		$time = strtotime($ticker['time']);
+		$average = ($bid+$ask)/2;
+		$instrument = $bf_pair;
 
 		$instrument = strpos($instrument,'-') !== false ? str_replace('-','/',$instrument) : $instrument;
 		/** tick table update */
 		$ins = \DB::insert("
-			INSERT INTO bh_ohlcvs
-			(`bh_exchanges_id`, `symbol`, `timestamp`, `datetime`, `open`, `high`, `low`, `close`, `volume`, `created_at`, `updated_at`)
+			INSERT INTO bh_tickers
+			(`bh_exchanges_id`, `symbol`, `timestamp`, `datetime`, `open`, `high`, `low`, `bid`, `ask`, `close`, `last`, `average`, `created_at`, `updated_at`)
 			VALUES
-			('$excahnge_ID','$instrument', $timeid, NOW(), $last_price, $last_price, $last_price, $last_price, $volume, NOW(),NOW())
+			('$excahnge_ID','$instrument', $time, NOW(), $open, $high, $low, $bid, $ask, $close, $price, $average, NOW(),NOW())
 			ON DUPLICATE KEY UPDATE
 			`high`   = CASE WHEN `high` < VALUES(`high`) THEN VALUES(`high`) ELSE `high` END,
 			`low`    = CASE WHEN `low` > VALUES(`low`) THEN VALUES(`low`) ELSE `low` END,
-			`volume` = VALUES(`volume`),
 			`close`  = VALUES(`close`),
 			updated_at = NOW()
 		");
