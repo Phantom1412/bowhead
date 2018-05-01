@@ -76,16 +76,22 @@ php artisan bowhead:example_usage
 ```
 This list should show you all green at the end (check the indicator for weekly it drops error)
 
+### Example Signal
+We wish to see how the basic signals work and do they drop error anywhere in the code. For this test use this command:
+```
+php artisan bowhead:example_signals
+```
+
+### Example Strategies
+Just a simple test to show how the strategies works
+```
+php artisan bowhead:example_strategy
+```
+
 ### Testing Candles
 Now we can move to test the candles with the following command:
 ```
 php artisan bowhead:test_candles
-```
-
-### Check Signal
-We wish to see how the basic signals work and do they drop error anywhere in the code. For this test use this command:
-```
-php artisan bowhead:example_signals
 ```
 Should show you green,red for BTC-USD pair.
 
@@ -96,6 +102,23 @@ Test strategies and set here what is your best strategy. Using without test para
 ```
 php artisan bowhead:test_strategies test
 ```
+
+### GDAX trading BOT
+> This is still under heavy development and a lot of changes, for now the real time trading is off
+
+Now we are at the part what everyone wants to make money. Now this BOT is tied up with GDAX account 
+and he will to there the tradings. In .env while testing SET THE SANDBOX API URL in CBURL like this:
+```
+CBURL=https://api-public.sandbox.gdax.com
+```
+When all is working as you expected then you can change to the live trading url. Now to start this bot run the
+following command:
+```
+php artisan bowhead:gdax_scalper
+```
+There is a synchronisation for the data and if they are too old it will stop working.
+
+
 
 #TODO list
 

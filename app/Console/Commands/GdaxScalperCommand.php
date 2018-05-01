@@ -176,9 +176,9 @@ class GdaxScalperCommand extends Command
 
 //	        TODO it might be that we are looking in the wrong table!
 //	        TODO getRecentData returns from bh_tickers and we might need bh_ohlcvs instead
-	        $is_synced = $this->checkRecentData();
 
 	        // We are checking here the database difference and if there is more then 1 hour difference then stop trading
+	        $is_synced = $this->checkRecentData();
 	        foreach ($is_synced as $key => $val) {
 
 	        	switch ($key) {
@@ -209,7 +209,7 @@ class GdaxScalperCommand extends Command
 	            if ($sar_stoch_sig > 1) {
 		            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
 		            $price_move = $_ticker['price'] - 0.75;
-		            echo $price_move;
+		            echo $_ticker['price']."\n\n";
 //                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
 	            }
 
@@ -217,7 +217,7 @@ class GdaxScalperCommand extends Command
 	            if ($sar_stoch_sig > -1) {
 		            echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
 		            $price_move = $_ticker['price'] + 0.75;
-		            echo $price_move;
+		            echo $_ticker['price']."\n\n";
 //                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
 	            }
 
