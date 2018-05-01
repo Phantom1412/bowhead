@@ -12,7 +12,6 @@ use Bowhead\Traits\OHLC;
 use Bowhead\Traits\Signals;
 use Bowhead\Traits\Strategies;
 use Bowhead\Util\Console;
-use Bowhead\Console\Kernel;
 use Bowhead\Util;
 use Illuminate\Console\Command;
 
@@ -112,10 +111,10 @@ class GdaxScalperCommand extends Command
         echo $this->console->colorize("PRESS ENTER TO CONTINUE\n");
         echo $this->console->colorize("------------------------------------------------------------------\n");
 
+//      TODO this tables are already updated if the cron is running
         $handle = fopen ("php://stdin","r");
         $line = fgets($handle);
 
-//      TODO this tables are already updated if the cron is running
         echo $this->console->colorize("UPDATING RECENT Open, High, Low, Close data\n");
         $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC-USD');
         $totalsize = $trades = [];
@@ -177,15 +176,27 @@ class GdaxScalperCommand extends Command
 
 //	        TODO it might be that we are looking in the wrong table!
 //	        TODO getRecentData returns from bh_tickers and we might need bh_ohlcvs instead
+	        $is_synced = $this->checkRecentData();
+
+	        // We are checking here the database difference and if there is more then 1 hour difference then stop trading
+	        foreach ($is_synced as $key => $val) {
+
+	        	switch ($key) {
+			        case 'seconds':
+				        echo $this->console->colorize("\n".$val."\n",'green');
+			        	break;
+			        case 'minutes':
+				        echo $this->console->colorize("\n".$val."\n",'yellow');
+				        break;
+			        case 'hours':
+				        echo $this->console->colorize("\n".$val."\n",'red');
+				        die($this->console->colorize("Closing the loop as there are no data!\n\n",'light_red'));
+		        } // switch
+
+	        } // foreach
 
             $data = $this->getRecentData('BTC/USD', 150);
-//            $is_up_to_date = array_pop($data['timestamp']);
-//            var_dump($is_up_to_date);
-//	        var_dump(date('Y-m-d h:i:s',$is_up_to_date));
-//            var_dump(time());
-//            $difference = (time()-$is_up_to_date)/60;
-//            var_dump($difference.' minutes');
-            var_dump($data);
+//            var_dump($data);
 
             if (!empty($data)) {
 	            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
@@ -198,6 +209,7 @@ class GdaxScalperCommand extends Command
 	            if ($sar_stoch_sig > 1) {
 		            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
 		            $price_move = $_ticker['price'] - 0.75;
+		            echo $price_move;
 //                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
 	            }
 
@@ -205,6 +217,7 @@ class GdaxScalperCommand extends Command
 	            if ($sar_stoch_sig > -1) {
 		            echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
 		            $price_move = $_ticker['price'] + 0.75;
+		            echo $price_move;
 //                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
 	            }
 

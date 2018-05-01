@@ -68,27 +68,27 @@ trait OHLC {
     	$exchID = env('DEFAULT_EXCHANGE_ID');
         $ret = array();
         foreach ($datas as $data) {
-	        if (isset($exchID)) {
-	        	if ($data->bh_exchanges_id === $exchID) {
-			        $ret['timestamp'][]   = $data->buckettime;
-			        $ret['date'][]   = gmdate("Y-m-d h:i:s", $data->buckettime);
-			        $ret['low'][]    = $data->low;
-			        $ret['high'][]   = $data->high;
-			        $ret['open'][]   = $data->open;
-			        $ret['close'][]  = $data->close;
-			        $ret['volume'][] = $data->volume;
-		        } // if
-	        } else {
+//	        if (isset($exchID)) {
+//	        	if ($data->bh_exchanges_id === (int)$exchID) {
+//			        $ret['timestamp'][]   = $data->buckettime;
+//			        $ret['date'][]   = gmdate("j-M-y", $data->buckettime);
+//			        $ret['low'][]    = $data->low;
+//			        $ret['high'][]   = $data->high;
+//			        $ret['open'][]   = $data->open;
+//			        $ret['close'][]  = $data->close;
+//			        $ret['volume'][] = $data->volume;
+//		        } // if
+//	        } else {
 		        $ret[$data->bh_exchanges_id]['timestamp'][]   = $data->buckettime;
-		        $ret[$data->bh_exchanges_id]['date'][]   = gmdate("Y-m-d h:i:s", $data->buckettime);
+		        $ret[$data->bh_exchanges_id]['date'][]   = gmdate("j-M-y", $data->buckettime);
 		        $ret[$data->bh_exchanges_id]['low'][]    = $data->low;
 		        $ret[$data->bh_exchanges_id]['high'][]   = $data->high;
 		        $ret[$data->bh_exchanges_id]['open'][]   = $data->open;
 		        $ret[$data->bh_exchanges_id]['close'][]  = $data->close;
 		        $ret[$data->bh_exchanges_id]['volume'][] = $data->volume;
-	        } // if
+//	        } // if
 
-        }
+        } // foreach
         foreach($ret as $ex => $opt) {
             foreach ($opt as $key => $rettemmp) {
                 $ret[$ex][$key] = array_reverse($rettemmp);
@@ -223,8 +223,37 @@ trait OHLC {
             $ret = $this->organizePairData($results, $limit);
         }
 
-//        TODO set here or in organizePairData the exchange ID for further analising as in all it expects assoc array
-        \Cache::put($key, array_first($ret), 2);
-        return array_first($ret);
+        \Cache::put($key, $ret, 2);
+        return $ret;
     }
+
+	/**
+	 * We check here how old our data is in the database
+	 *
+	 * @return array
+	 */
+    public function checkRecentData() {
+	    $last_record = DB::table('bh_tickers')->orderBy('id', 'desc')->first();
+	    $latest_insert = strtotime($last_record->created_at);
+	    $difference = time()-$latest_insert;
+
+	    $hours = floor($difference / 3600);
+	    $minutes = floor($difference / 60);
+	    $seconds = $difference;
+
+	    $data = array();
+	    switch (true) {
+		    case $seconds <= 60 :
+			    $data = array('seconds' => 'Nice we are up to date, the difference is '.$seconds.' seconds');
+			    break;
+		    case $minutes <= 60 :
+		    	$data = array('minutes' => 'This is just a warning we are away '.$minutes.' minutes!');
+			    break;
+		    case $hours <= 1 :
+		    	$data = array('hours' => 'Database is out of sync '.$hours.' minutes!');
+			    break;
+	    } // switch
+
+	    return $data;
+    } // checkRecentData
 }
