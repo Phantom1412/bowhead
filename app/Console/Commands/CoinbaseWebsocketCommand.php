@@ -62,7 +62,7 @@ class CoinbaseWebsocketCommand extends Command {
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         $this->console = $util = new Console();
 
