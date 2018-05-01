@@ -9,24 +9,85 @@ namespace Bowhead\Traits;
 
 use Illuminate\Support\Facades\DB;
 
-trait OHLC
-{
+trait OHLC {
+
+//	TODO remove this function as the data is populated in DB no need for this, leaving now for testing only!
+	/**
+	 * @param $ticker
+	 *
+	 * @return bool
+	 */
+	public function markOHLC($ticker, $bf = false, $bf_pair = 'BTC/USD',$excahnge_ID = null) {
+
+		if (empty($excahnge_ID)) {
+			$excahnge_ID = env('DEFAULT_EXCHANGE_ID');
+		} // if
+
+		$now = time();
+		$timeid = date('YmdHis'); // 20170530152259 unique for date
+		$ctime = date('Y-m-d H:i:s');
+		if ($bf) {
+			/** Bitfinex websocked */
+			$last_price = $ticker[7];
+			$volume = $ticker[8];
+			$instrument = $bf_pair;
+
+			/** if timeid passed, we use it, otherwise use generated one.. */
+			$timeid = ($ticker['timeid'] ?? $timeid);
+		} else {
+			/** Oanda websocket */
+			$last_price = $ticker['tick']['bid'];
+			$instrument = $ticker['tick']['instrument'];
+			$volume = 0;
+		} // if
+
+		$instrument = strpos($instrument,'-') !== false ? str_replace('-','/',$instrument) : $instrument;
+		/** tick table update */
+		$ins = \DB::insert("
+			INSERT INTO bh_ohlcvs
+			(`bh_exchanges_id`, `symbol`, `timestamp`, `datetime`, `open`, `high`, `low`, `close`, `volume`, `created_at`, `updated_at`)
+			VALUES
+			('$excahnge_ID','$instrument', $timeid, NOW(), $last_price, $last_price, $last_price, $last_price, $volume, NOW(),NOW())
+			ON DUPLICATE KEY UPDATE
+			`high`   = CASE WHEN `high` < VALUES(`high`) THEN VALUES(`high`) ELSE `high` END,
+			`low`    = CASE WHEN `low` > VALUES(`low`) THEN VALUES(`low`) ELSE `low` END,
+			`volume` = VALUES(`volume`),
+			`close`  = VALUES(`close`),
+			updated_at = NOW()
+		");
+
+		return true;
+	} // markOHLC
+
     /**
      * @param $datas
      *
      * @return array
      */
-    public function organizePairData($datas, $limit=999)
-    {
+    public function organizePairData($datas, $limit=999) {
+    	$exchID = env('DEFAULT_EXCHANGE_ID');
         $ret = array();
         foreach ($datas as $data) {
-            $ret[$data->bh_exchanges_id]['timestamp'][]   = $data->buckettime;
-            $ret[$data->bh_exchanges_id]['date'][]   = gmdate("j-M-y", $data->buckettime);
-            $ret[$data->bh_exchanges_id]['low'][]    = $data->low;
-            $ret[$data->bh_exchanges_id]['high'][]   = $data->high;
-            $ret[$data->bh_exchanges_id]['open'][]   = $data->open;
-            $ret[$data->bh_exchanges_id]['close'][]  = $data->close;
-            $ret[$data->bh_exchanges_id]['volume'][] = $data->volume;
+	        if (isset($exchID)) {
+	        	if ($data->bh_exchanges_id === $exchID) {
+			        $ret['timestamp'][]   = $data->buckettime;
+			        $ret['date'][]   = gmdate("Y-m-d h:i:s", $data->buckettime);
+			        $ret['low'][]    = $data->low;
+			        $ret['high'][]   = $data->high;
+			        $ret['open'][]   = $data->open;
+			        $ret['close'][]  = $data->close;
+			        $ret['volume'][] = $data->volume;
+		        } // if
+	        } else {
+		        $ret[$data->bh_exchanges_id]['timestamp'][]   = $data->buckettime;
+		        $ret[$data->bh_exchanges_id]['date'][]   = gmdate("Y-m-d h:i:s", $data->buckettime);
+		        $ret[$data->bh_exchanges_id]['low'][]    = $data->low;
+		        $ret[$data->bh_exchanges_id]['high'][]   = $data->high;
+		        $ret[$data->bh_exchanges_id]['open'][]   = $data->open;
+		        $ret[$data->bh_exchanges_id]['close'][]  = $data->close;
+		        $ret[$data->bh_exchanges_id]['volume'][] = $data->volume;
+	        } // if
+
         }
         foreach($ret as $ex => $opt) {
             foreach ($opt as $key => $rettemmp) {
@@ -47,7 +108,7 @@ trait OHLC
      *
      * @return array
      */
-    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='5m', $returnRS=false)
+    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='1m', $returnRS=false)
     {
         /**
          *  we need to cache this as many strategies will be
