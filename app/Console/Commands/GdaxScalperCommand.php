@@ -133,7 +133,8 @@ class GdaxScalperCommand extends Command
 
 
 //            $this->markOHLC($ticker, 1, $this->instrument);
-            $this->console->progressBar($i, $total);
+	        usleep(10000);
+            echo $this->console->progressBar($i, $total);
             $i++;
         }
         echo $this->console->colorize("\nUPDATED $this->instrument\n");
@@ -218,7 +219,7 @@ class GdaxScalperCommand extends Command
 
 	        } // foreach
 
-            $data = $this->getRecentData('BTC/USD', 150);
+            $data = $this->getRecentData('BTC/USD', 200);
 //            var_dump($data);
 
             if (!empty($data)) {
@@ -274,7 +275,7 @@ class GdaxScalperCommand extends Command
     }
 
     private function update_state() {
-        echo $this->console->colorize("Updating...\n", 'reverse');
+        echo $this->console->colorize("Updating state...\n", 'reverse');
         $this->orders = $this->coinbase->listorders();
 
         $this->book = $this->coinbase->get_endpoint('book',null,null,'BTC-USD');
