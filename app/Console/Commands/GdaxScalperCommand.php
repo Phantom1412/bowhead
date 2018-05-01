@@ -115,9 +115,9 @@ class GdaxScalperCommand extends Command
         $handle = fopen ("php://stdin","r");
         $line = fgets($handle);
 
-
+//      TODO this tables are already updated if the cron is running
         echo $this->console->colorize("UPDATING RECENT Open, High, Low, Close data\n");
-        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC/USD');
+        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC-USD');
         $totalsize = $trades = [];
         $total = count($_trades);
         $i = 1;
@@ -131,6 +131,8 @@ class GdaxScalperCommand extends Command
             $ticker['timeid'] = $timeid;
             $ticker[7] = $tr['price'];
             $ticker[8] = $totalsize[$timeid] ?? 0;
+
+
 //            $this->markOHLC($ticker, 1, $this->instrument);
             $this->console->progressBar($i, $total);
             $i++;
@@ -169,9 +171,22 @@ class GdaxScalperCommand extends Command
             $ticker = [];
             $ticker[7] = $_ticker['price'];
             $ticker[8] = $_ticker['volume'];
+
+//          TODO this tables are already updated if the cron is running
 //            $this->markOHLC($ticker, 1, $this->instrument);
-            $data = $this->getRecentData($this->instrument, 150);
-	//	        var_dump($data);
+
+//	        TODO it might be that we are looking in the wrong table!
+//	        TODO getRecentData returns from bh_tickers and we might need bh_ohlcvs instead
+
+            $data = $this->getRecentData('BTC/USD', 150);
+//            $is_up_to_date = array_pop($data['timestamp']);
+//            var_dump($is_up_to_date);
+//	        var_dump(date('Y-m-d h:i:s',$is_up_to_date));
+//            var_dump(time());
+//            $difference = (time()-$is_up_to_date)/60;
+//            var_dump($difference.' minutes');
+            var_dump($data);
+
             if (!empty($data)) {
 	            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
 	            /**
@@ -216,10 +231,9 @@ class GdaxScalperCommand extends Command
         $this->bidsize = $this->book['bids'][0][1];
         $this->asksize = $this->book['asks'][0][1];
 
-//        TODO transfer Balance symbol and the $key contains the currency
         $bals = $this->coinbase->get_balances();
         foreach($bals as $key => $bal) {
-//        	Show none 0 balance
+//        	Show none 0 balance only
         	if (empty($bal['available'])) {
 		        $this->balances[$key] = $bal['available'];
 	        } // if
