@@ -206,20 +206,35 @@ class GdaxScalperCommand extends Command
 	             *
 	             *  TODO: we need to add in tests for if we have the $ and/or if we have the BTC
 	             */
-	            if ($sar_stoch_sig > 1) {
-		            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
-		            $price_move = $_ticker['price'] - 0.75;
-		            echo $_ticker['price']."\n\n";
-//                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
-	            }
+	            switch ($sar_stoch_sig) {
+		            case 0:
+			            echo $this->console->colorize("We got 0 response from bowhead_sar_stoch\n");
+			            echo $_ticker['price']."\n\n";
+			            break;
+		            case 1:
+			            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n",'green');
+			            echo $_ticker['price']."\n\n";
+			            break;
+			        case -1;
+				        echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n",'red');
+				        echo $_ticker['price']."\n\n";
+			            break;
+	            } // switch
 
-	            /** if the opposite, then try to scalp in the other direction */
-	            if ($sar_stoch_sig > -1) {
-		            echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
-		            $price_move = $_ticker['price'] + 0.75;
-		            echo $_ticker['price']."\n\n";
-//                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
-	            }
+//	            if ($sar_stoch_sig > 1) {
+//		            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n");
+//		            $price_move = $_ticker['price'] - 0.75;
+//		            echo $_ticker['price']."\n\n";
+////                $this->coinbase->limit_buy($this->instrument, '0.01000000', $price_move, 'GTT', 'min');
+//	            }
+//
+//	            /** if the opposite, then try to scalp in the other direction */
+//	            if ($sar_stoch_sig > -1) {
+//		            echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n");
+//		            $price_move = $_ticker['price'] + 0.75;
+//		            echo $_ticker['price']."\n\n";
+////                $this->coinbase->limit_sell($this->instrument, 0.01000000, $price_move, 'GTT', 'min');
+//	            }
 
 	            /**
 	             *   TODO: continue with other strategies.
