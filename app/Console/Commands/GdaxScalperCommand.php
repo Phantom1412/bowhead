@@ -173,6 +173,7 @@ class GdaxScalperCommand extends Command
 //	        $time2 = 1525188540;
 //	        echo date('Y-m-d h:i:s',$time1)."\n";
 //	        echo date('Y-m-d h:i:s',$time2)."\n";
+//	        TODO timestamp is refreshed by 1 minute so the keyup is always the same set this differently or generate our timestamp!
             $_orders = [];
             if (count($this->orders) > 0) {
                 echo $this->console->colorize("\nCurrent orders:\n");
@@ -223,7 +224,6 @@ class GdaxScalperCommand extends Command
 //            var_dump($data);
 
             if (!empty($data)) {
-//            	var_dump($ticker);
 	            $sar_stoch_sig = $this->bowhead_sar_stoch($this->instrument, $data);
 	            /**
 	             *  If SAR is under a GREEN candle and STOCH crosses the lower line going up.
@@ -234,15 +234,12 @@ class GdaxScalperCommand extends Command
 	            switch ($sar_stoch_sig) {
 		            case 0:
 			            echo $this->console->colorize("We got 0 response from bowhead_sar_stoch\n");
-			            echo $_ticker['price']."\n\n";
 			            break;
 		            case 1:
 			            echo $this->console->colorize("Limit BUY with bowhead_sar_stoch\n",'green');
-			            echo $_ticker['price']."\n\n";
 			            break;
 			        case -1;
 				        echo $this->console->colorize("Limit SELL with bowhead_sar_stoch\n",'red');
-				        echo $_ticker['price']."\n\n";
 			            break;
 	            } // switch
 
