@@ -35,6 +35,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
  *          volatility indicators: ATR,NATR,TRANGE
  *          cycle indicators: HT_DCPERIOD,HT_DCPHASE,HT_PHASOR,HT_SINE,HT_TRENDMODE
  */
+const TRADER_MA_TYPE_SMA = 5; // Setting 5 as SMA as we wish to go on tight lookup
+
+
 class Indicators
 {
     use OHLC;
@@ -349,6 +352,7 @@ class Indicators
         if (empty($data['high'])) {
             return 0;
         }
+
         #$prev_close = $data['close'][count($data['close']) - 2]; // prior close
         #$current = $data['close'][count($data['close']) - 1];    // we assume this is current
 
