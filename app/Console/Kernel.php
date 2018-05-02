@@ -5,6 +5,7 @@ namespace Bowhead\Console;
 use Bowhead\Console\Commands\FxStreamCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Psy\Command\Command;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,16 +16,17 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\A_SetupCommand::class,
+	    Commands\BitfinexWebsocketCommand::class,
+	    Commands\CoinbaseWebsocketCommand::class,
         Commands\DataRunnerCcxtCommand::class,
         Commands\DataRunnerCoinigyCommand::class,
-        Commands\BitfinexWebsocketCommand::class,
-        Commands\CoinbaseWebsocketCommand::class,
-        #Commands\OandaStreamCommand::class,
         Commands\ExampleUsageCommand::class,
         Commands\ExampleCommand::class,
+	    Commands\GetHistoricalCommand::class,
         #Commands\ExampleForexStrategyCommand::class,
         #Commands\BitfinexWebsocketETHCommand::class,
         #Commands\WebsocketCoinbaseTestCommand::class,
+	    #Commands\OandaStreamCommand::class,
         Commands\SignalsExampleCommand::class,
         Commands\TestStrategiesCommand::class,
         Commands\GdaxScalperCommand::class,
