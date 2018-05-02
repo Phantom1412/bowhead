@@ -7,6 +7,7 @@
  */
 namespace Bowhead\Traits;
 
+use Bowhead\Models\bh_tickers;
 use Illuminate\Support\Facades\DB;
 
 trait OHLC {
@@ -22,78 +23,43 @@ trait OHLC {
 		if (empty($excahnge_ID)) {
 			$excahnge_ID = env('DEFAULT_EXCHANGE_ID');
 		} // if
-		/**
-		 array(11) {
-		'trade_id' =>
-		int(1672682)
-		'price' =>
-		string(13) "8976.04000000"
-		'size' =>
-		string(10) "0.00500000"
-		'bid' =>
-		string(7) "8976.17"
-		'ask' =>
-		string(7) "8976.18"
-		'volume' =>
-		double(0.02)
-		'time' =>
-		string(27) "2018-05-01T19:11:00.238000Z"
-		'low' =>
-		double(8976.04)
-		'high' =>
-		double(8976.17)
-		'open' =>
-		double(8976.17)
-		'close' =>
-		double(8976.04)
-		}
-		 * DB data =>
-		 `bh_exchanges_id`,
-  `symbol`,
-  `timestamp`,
-  `datetime`,
-  `high`,
-  `low`,
-  `bid`,
-  `ask`,
-  `vwap`,
-  `open`,
-  `close`,
-  `first`,
-  `last`,
-  `change`,
-  `percentage`,
-  `average`,
-  `basevolume`,
-  `quotevolume`,
-  `created_at`,
-  `updated_at`,
-  `deleted_at`,
-*/
-		$price = $ticker['price'];
-		$bid = $ticker['bid'];
-		$ask = $ticker['ask'];
-		$low = $ticker['low'];
-		$high = $ticker['high'];
-		$open = $ticker['open'];
-		$close = $ticker['close'];
-		$time = strtotime($ticker['time']);
-		$average = ($bid+$ask)/2;
-		$instrument = $bf_pair;
 
-		$instrument = strpos($instrument,'-') !== false ? str_replace('-','/',$instrument) : $instrument;
-		/** tick table update */
-		$ins = \DB::insert("
-			INSERT INTO bh_tickers
-			(`bh_exchanges_id`, `symbol`, `timestamp`, `datetime`, `open`, `high`, `low`, `bid`, `ask`, `close`, `last`, `average`, `created_at`, `updated_at`)
-			VALUES
-			('$excahnge_ID','$instrument', $time, NOW(), $open, $high, $low, $bid, $ask, $close, $price, $average, NOW(),NOW())
-			ON DUPLICATE KEY UPDATE
-			`high`   = CASE WHEN `high` < VALUES(`high`) THEN VALUES(`high`) ELSE `high` END,
-			`low`    = CASE WHEN `low` > VALUES(`low`) THEN VALUES(`low`) ELSE `low` END,
-			`close`  = VALUES(`close`),
-			updated_at = NOW()
-		");
+		$symbol = str_replace('-','/',$bf_pair);
+		$high = isset($ticker['high']) ? $ticker['high'] : null;
+		$low = isset($ticker['low']) ? $ticker['low'] : null;
+		$bid = isset($ticker['bid']) ? $ticker['bid'] : null;
+		$ask = isset($ticker['ask']) ? $ticker['ask'] : null;
+		$open = isset($ticker['open']) ? $ticker['open'] : null;
+		$close = isset($ticker['close']) ? $ticker['close'] : null;
+		$last = isset($ticker['price']) ? $ticker['price'] : null;
+		$average = ($bid+$ask)/2;
+
+		$time = strtotime($ticker['time']);
+
+		$fill = array (
+			'bh_exchanges_id' => $excahnge_ID,
+			'symbol' => $symbol,
+			'timestamp' => time(),
+			'datetime' => date('Y-m-d H:i:s'),
+			'high' => floatval($high),
+			'low' => floatval($low),
+			'bid' => floatval($bid),
+			'ask' => floatval ($ask),
+			'vwap' => null,
+			'open' => $open,
+			'close' => $close,
+			'first' => null,
+			'last' => $last,
+			'change' => null,
+			'percentage' => null,
+			'average' => floatval($average),
+			'baseVolume' => null,
+			'quoteVolume' => null,
+			'updated_at' => date('Y-m-d H:i:s'),
+			'created_at' => date('Y-m-d H:i:s'),
+			'deleted_at' => null
+		);
+		\DB::table('bh_tickers')->insert($fill);
 
 		return true;
 	} // markOHLC
@@ -128,12 +94,15 @@ trait OHLC {
 //	        } // if
 
         } // foreach
-        foreach($ret as $ex => $opt) {
-            foreach ($opt as $key => $rettemmp) {
-                $ret[$ex][$key] = array_reverse($rettemmp);
-                $ret[$ex][$key] = array_slice($ret[$ex][$key], 0, $limit, true);
-            }
-        }
+
+//        foreach($ret as $ex => $opt) {
+//            foreach ($opt as $key => $rettemmp) {
+//                $ret[$ex][$key] = array_reverse($rettemmp);
+//                $ret[$ex][$key] = array_slice($ret[$ex][$key], 0, $limit, true);
+//            }
+//        }
+//	    var_dump($ret);
+//	    die('weeeee');
         return $ret;
     }
 
@@ -263,7 +232,7 @@ trait OHLC {
         }
 
         \Cache::put($key, $ret, 2);
-        return $ret;
+        return array_first($ret);
     }
 
 	/**
