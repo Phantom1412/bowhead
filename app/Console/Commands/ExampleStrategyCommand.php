@@ -139,7 +139,7 @@ class ExampleCommand extends Command
                 $line .= $console->colorize(str_pad("mfi:$mfi", 9), $this->doColor($mfi));
                 $line .= ($overbought ? $console->colorize(' overbought', 'light_red') : $console->colorize(' overbought', 'dark'));
                 $line .= ($underbought ? $console->colorize(' underbought', 'light_green') : $console->colorize(' underbought', 'dark'));
-                echo "$line";
+                echo "\n$line";
 
                 /**
                  *  DISPLAY DONE

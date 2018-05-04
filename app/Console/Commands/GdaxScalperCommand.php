@@ -111,8 +111,8 @@ class GdaxScalperCommand extends Command
         echo $this->console->colorize("PRESS ENTER TO CONTINUE\n");
         echo $this->console->colorize("------------------------------------------------------------------\n");
 
-//        $handle = fopen ("php://stdin","r");
-//        $line = fgets($handle);
+        $handle = fopen ("php://stdin","r");
+        $line = fgets($handle);
 //
 //        echo $this->console->colorize("UPDATING RECENT Open, High, Low, Close data\n");
 //        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC-USD');
@@ -228,9 +228,11 @@ class GdaxScalperCommand extends Command
 			            break;
 		            case 1:
 			            echo $this->console->colorize(" | Limit BUY with bowhead_sar_stoch\n",'green');
+			            die('BUY signal!');
 			            break;
 			        case -1;
 				        echo $this->console->colorize(" | Limit SELL with bowhead_sar_stoch\n",'red');
+				        die('SELL signal!');
 			            break;
 	            } // switch
 

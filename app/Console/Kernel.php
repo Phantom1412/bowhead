@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\DataRunnerCoinigyCommand::class,
         Commands\ExampleUsageCommand::class,
         Commands\ExampleCommand::class,
+	    Commands\Forecast::class,
 	    Commands\GetHistoricalCommand::class,
         #Commands\ExampleForexStrategyCommand::class,
         #Commands\BitfinexWebsocketETHCommand::class,
@@ -35,6 +36,7 @@ class Kernel extends ConsoleKernel
         Commands\RandomWalkCommand::class,
         #Commands\FxStreamCommand::class,
 		#Commands\KrakenStreamCommand::class,
+	    Commands\ImportHistoryData::class
     ];
 
     /**

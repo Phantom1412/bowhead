@@ -60,15 +60,15 @@ trait OHLC {
 			'created_at' => date('Y-m-d H:i:s'),
 			'deleted_at' => null
 		);
-
-		$getDate = \DB::table('bh_tickers')->where('datetime', $date)->exists();
-		if ($getDate) {
-			\DB::table('bh_tickers')
-			  ->where('datetime', $date)
-			  ->update($fill);
-		} else {
-			\DB::table('bh_tickers')->insert($fill);
-		} // if
+		$this->updateOrCreate($fill);
+//		$getDate = \DB::table('bh_tickers')->where('datetime', $date)->exists();
+//		if ($getDate) {
+//			\DB::table('bh_tickers')
+//			  ->where('datetime', $date)
+//			  ->update($fill);
+//		} else {
+//			\DB::table('bh_tickers')->insert($fill);
+//		} // if
 
 		return true;
 	} // markOHLC
