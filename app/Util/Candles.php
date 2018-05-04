@@ -131,6 +131,7 @@ class Candles
         if (empty($data)) {
             $data = $this->getRecentData($pair);
         }
+
         foreach($this->candles as $cdlfunc => $name) {
             if (function_exists($cdlfunc)) {
                 $tempdata = $cdlfunc($data['open'], $data['high'], $data['low'], $data['close']);

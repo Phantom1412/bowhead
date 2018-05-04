@@ -231,11 +231,13 @@ class DataRunnerCcxtCommand extends Command
                         'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
                     ));
                     $class = ${'bh_' . $exchange};
+
                 }
 
                 try {
                     #$markets = $class->load_markets();
                     foreach ($trading_pairs as $pair) {
+
                         if ($ex->hasFetchTickers) {
                             $tick = $class->fetchTicker($pair);
 

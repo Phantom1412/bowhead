@@ -134,5 +134,7 @@ No if we will not use the Poloniex as exchange!
 3. TODO GDAX autoamted trader BOT setup
 3.1 
 
+4. TODO create historic importer script in other hand it will not work
+
 
 TODO test strategies uses FX streaming try to change to crypto

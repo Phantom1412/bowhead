@@ -34,13 +34,14 @@ trait OHLC {
 		$last = isset($ticker['price']) ? $ticker['price'] : null;
 		$average = ($bid+$ask)/2;
 
-		$time = strtotime($ticker['time']);
+		$time = isset($ticker['timestamp']) ? strtotime($ticker['timestamp']) : time();
+		$date = isset($ticker['date']) ? $ticker['date'] : date('Y-m-d H:i:s');
 
 		$fill = array (
 			'bh_exchanges_id' => $excahnge_ID,
 			'symbol' => $symbol,
-			'timestamp' => time(),
-			'datetime' => date('Y-m-d H:i:s'),
+			'timestamp' => $time,
+			'datetime' => $date,
 			'high' => floatval($high),
 			'low' => floatval($low),
 			'bid' => floatval($bid),
@@ -59,7 +60,15 @@ trait OHLC {
 			'created_at' => date('Y-m-d H:i:s'),
 			'deleted_at' => null
 		);
-		\DB::table('bh_tickers')->insert($fill);
+
+		$getDate = \DB::table('bh_tickers')->where('datetime', $date)->exists();
+		if ($getDate) {
+			\DB::table('bh_tickers')
+			  ->where('datetime', $date)
+			  ->update($fill);
+		} else {
+			\DB::table('bh_tickers')->insert($fill);
+		} // if
 
 		return true;
 	} // markOHLC
@@ -73,36 +82,37 @@ trait OHLC {
     	$exchID = env('DEFAULT_EXCHANGE_ID');
         $ret = array();
         foreach ($datas as $data) {
-//	        if (isset($exchID)) {
-//	        	if ($data->bh_exchanges_id === (int)$exchID) {
-//			        $ret['timestamp'][]   = $data->buckettime;
-//			        $ret['date'][]   = gmdate("j-M-y", $data->buckettime);
-//			        $ret['low'][]    = $data->low;
-//			        $ret['high'][]   = $data->high;
-//			        $ret['open'][]   = $data->open;
-//			        $ret['close'][]  = $data->close;
-//			        $ret['volume'][] = $data->volume;
-//		        } // if
-//	        } else {
+	        if (isset($exchID) && $data->bh_exchanges_id == $exchID) {
+		        $ret['timestamp'][]   = $data->buckettime;
+		        $ret['date'][]   = gmdate("j-M-y", $data->buckettime);
+//		        $ret['date'][]   = gmdate("Y-m-d H:i:s", $data->buckettime);
+		        $ret['low'][]    = $data->low;
+		        $ret['high'][]   = $data->high;
+		        $ret['open'][]   = $data->open;
+		        $ret['close'][]  = $data->close;
+		        $ret['volume'][] = $data->volume;
+	        } else {
 		        $ret[$data->bh_exchanges_id]['timestamp'][]   = $data->buckettime;
 		        $ret[$data->bh_exchanges_id]['date'][]   = gmdate("j-M-y", $data->buckettime);
+//		        $ret[$data->bh_exchanges_id]['date'][]   = gmdate("Y-m-d H:i:s", $data->buckettime);
 		        $ret[$data->bh_exchanges_id]['low'][]    = $data->low;
 		        $ret[$data->bh_exchanges_id]['high'][]   = $data->high;
 		        $ret[$data->bh_exchanges_id]['open'][]   = $data->open;
 		        $ret[$data->bh_exchanges_id]['close'][]  = $data->close;
 		        $ret[$data->bh_exchanges_id]['volume'][] = $data->volume;
-//	        } // if
-
+	        } // if
         } // foreach
 
-//        foreach($ret as $ex => $opt) {
-//            foreach ($opt as $key => $rettemmp) {
-//                $ret[$ex][$key] = array_reverse($rettemmp);
-//                $ret[$ex][$key] = array_slice($ret[$ex][$key], 0, $limit, true);
-//            }
-//        }
-//	    var_dump($ret);
-//	    die('weeeee');
+	    if (isset($exchID)) {
+		    $ret = array_reverse($ret);
+	    } else {
+		    foreach($ret as $ex => $opt) {
+			    foreach ($opt as $key => $rettemmp) {
+				    $ret[$ex][$key] = array_reverse($rettemmp);
+				    $ret[$ex][$key] = array_slice($ret[$ex][$key], 0, $limit, true);
+			    } // foreach
+		    } // foreach
+	    } // if
         return $ret;
     }
 
@@ -116,8 +126,7 @@ trait OHLC {
      *
      * @return array
      */
-    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='1m', $returnRS=false)
-    {
+    public function getRecentData($pair='BTC/USD', $limit=168, $day_data=false, $hour=12, $periodSize='1m', $returnRS=false) {
         /**
          *  we need to cache this as many strategies will be
          *  doing identical pulls for signals.
@@ -126,7 +135,7 @@ trait OHLC {
         $key = 'recent::'.$pair.'::'.$limit."::$day_data::$hour::$periodSize::$connection_name";
         if(\Cache::has($key)) {
             return \Cache::get($key);
-        }
+        } // if
 
         $timeslice = 60;
         switch($periodSize) {
@@ -232,7 +241,8 @@ trait OHLC {
         }
 
         \Cache::put($key, $ret, 2);
-        return array_first($ret);
+
+        return $ret;
     }
 
 	/**

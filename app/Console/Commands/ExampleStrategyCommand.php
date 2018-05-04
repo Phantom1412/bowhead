@@ -93,7 +93,7 @@ class ExampleCommand extends Command
         echo "PRESS 'q' TO QUIT AND CLOSE ALL POSITIONS\n\n\n";
         stream_set_blocking(STDIN, 0);
 
-        $instruments = ['BTC/USD'];
+        $instruments = ['BTC/USD','ETH/BTC','LTC/BTC'];
         $util        = new Util\BrokersUtil();
         $wc          = new Util\Whaleclub($this->instrument);
         $console     = new \Bowhead\Util\Console();
