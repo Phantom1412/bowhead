@@ -64,8 +64,8 @@ class ExampleUsageCommand extends Command
         $console    = new Console();
 
         /** instantiate all the brokerages */
-        $whaleclub = new Whaleclub('BTC/USD');
-        $onebroker = new OneBroker();
+//        $whaleclub = new Whaleclub('BTC/USD');
+//        $onebroker = new OneBroker();
         $cointbase = new Coinbase();
         $poloniex  = new PPC(env('POLONIEX_API'), env('POLONIEX_SECRET'));
         $bitfinex  = new Bitfinex(env('BITFINIX_KEY'),env('BITFINIX_SECRET'));
@@ -83,25 +83,25 @@ class ExampleUsageCommand extends Command
             $stop = true;
             return null;
         }
-        if (empty(env('WHALECLUB_TOKEN'))) {
-            echo $console->colorize("\nThis account type is required for the tutorial.",'reverse');
-            echo $console->colorize("\nSignup on Whaleclub: Use https://whaleclub.co/join/tn6uE for 30% deposit bonus.\n\n",'yellow');
-            $stop = true;
-            return null;
-        } else {
-            $account = $whaleclub->getBalance();
-            echo $console->colorize("WhaleClub\n");
-            echo $console->tableFormatArray(array_dot($account));
-        }
+//        if (empty(env('WHALECLUB_TOKEN'))) {
+//            echo $console->colorize("\nThis account type is required for the tutorial.",'reverse');
+//            echo $console->colorize("\nSignup on Whaleclub: Use https://whaleclub.co/join/tn6uE for 30% deposit bonus.\n\n",'yellow');
+//            $stop = true;
+//            return null;
+//        } else {
+//            $account = $whaleclub->getBalance();
+//            echo $console->colorize("WhaleClub\n");
+//            echo $console->tableFormatArray(array_dot($account));
+//        }
 
-        if (empty(env('ONEBROKER_TOKEN'))) {
-            echo $console->colorize("\nSign up for a OneBroker account: Use https://1broker.com/?r=21434 for bonus", 'yellow');
-            $warn = true;
-        } else {
-            $account = $onebroker->userDetailsGet();
-            echo $console->colorize("1Broker\n");
-            echo $console->tableFormatArray(array_dot($account));
-        }
+//        if (empty(env('ONEBROKER_TOKEN'))) {
+//            echo $console->colorize("\nSign up for a OneBroker account: Use https://1broker.com/?r=21434 for bonus", 'yellow');
+//            $warn = true;
+//        } else {
+//            $account = $onebroker->userDetailsGet();
+//            echo $console->colorize("1Broker\n");
+//            echo $console->tableFormatArray(array_dot($account));
+//        }
 
         if (empty(env('CBKEY'))) {
             echo $console->colorize("\nSign up for a Coinbase/GDAX account: Use https://www.coinbase.com/join/51950ca286c21b84dd000021 for bonus",'yellow');
@@ -121,10 +121,11 @@ class ExampleUsageCommand extends Command
             echo $console->tableFormatArray(array_dot($account));
         }
 
-        if (empty(env('OANDA_TOKEN'))) {
-            echo $console->colorize("\nSign up for a Oanda account: https://www.oanda.com/",'red');
-            $stop = true;
-        }
+//        if (empty(env('OANDA_TOKEN'))) {
+//            echo $console->colorize("\nSign up for a Oanda account: https://www.oanda.com/",'red');
+//            $stop = true;
+//        }
+
         if (empty(env('POLONIEX_API'))) {
             echo $console->colorize("\nSign up for a Poloniex account: https://poloniex.com", 'yellow');
             $warn = true;
