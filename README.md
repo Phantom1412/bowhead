@@ -30,7 +30,6 @@ system folder.
 ### Set up commands
 ```
 1. https://github.com/deakzsolt/bowhead.git2. cd bowhead
-
 2. curl -O http://pear.php.net/go-pear.phar
 3. sudo php -d detect_unicode=0 go-pear.phar
 4. sudo pecl install trader
@@ -52,6 +51,9 @@ system folder.
 ```
 13. php artisan migrate
 14. php artisan db:seed
+15. mkfifo quotes 
+16. echo "* * * * * `which php` `pwd`/artisan schedule:run >> /dev/null 2>&1" | /usr/bin/crontab
+17.  php composer.phar require andreas-glaser/poloniex-php-client dev-master
 ```
 
 > You will need also the redis server what will run in the background while you wish to use the bot
@@ -125,10 +127,6 @@ There is a synchronisation for the data and if they are too old it will stop wor
 
 
 #TODO list
-
-1. TODO check do we need this API handler for Poloniex
-???. php composer.phar require andreas-glaser/poloniex-php-client dev-master
-No if we will not use the Poloniex as exchange!
 
 > This is important in order to get the correct data and sort all
 2. TODO check the multidimensional array handler not to use only first from array
