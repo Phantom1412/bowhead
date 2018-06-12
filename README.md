@@ -30,14 +30,18 @@ system folder.
 ### Set up commands
 ```
 1. https://github.com/deakzsolt/bowhead.git2. cd bowhead
-2. php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-3. php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-4. php composer-setup.php
-5. php -r "unlink('composer-setup.php');"
-6. php composer.phar update
-7. curl -O http://pear.php.net/go-pear.phar
-8. sudo php -d detect_unicode=0 go-pear.phar
-9. sudo pecl install trader
+
+2. curl -O http://pear.php.net/go-pear.phar
+3. sudo php -d detect_unicode=0 go-pear.phar
+4. sudo pecl install trader
+```
+>On Osx if SIP is enabled use /usr/local to install pecl
+``` 
+5. php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+6. php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+7. php composer-setup.php
+8. php -r "unlink('composer-setup.php');"
+9. php composer.phar update
 10. cp .env.example .env
 11. php artisan key:generate
 12. mysql -u root -p bowhead < app/Scripts/DBdump.sql
