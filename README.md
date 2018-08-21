@@ -59,7 +59,7 @@ system folder.
 > You will need also the redis server what will run in the background while you wish to use the bot
 
 ```
-15. brew install redis
+18. brew install redis
 ```
 
 # How to start/use
