@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $item
  * @property string $value
  */
-class bh_configs extends Model
+class BhConfigs extends Model
 {
     /**
      * @var array

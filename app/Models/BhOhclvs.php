@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_ohlcvs extends Model
+class BhOhclvs extends Model
 {
     /**
      * @var array
