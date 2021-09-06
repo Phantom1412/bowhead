@@ -2,8 +2,8 @@
 
 namespace Bowhead\Http\Controllers;
 
-use Bowhead\Models\bh_exchange_pairs;
-use Bowhead\Models\bh_exchanges;
+use Bowhead\Models\BhExchangePairs;
+use Bowhead\Models\BhExchanges;
 use Bowhead\Traits\Config;
 use Bowhead\Traits\OHLC;
 use Illuminate\Http\Request;
@@ -36,13 +36,13 @@ class Main extends Controller
         /**
          *  Load up the pairs data by exchanges as we cannot try to graph data that does not exist.
          */
-        $exchange_pairs = bh_exchange_pairs::whereIn('exchange_id', $exchanges)->get();
+        $exchange_pairs = BhExchangePairs::whereIn('exchange_id', $exchanges)->get();
         foreach($exchange_pairs as $exchange_pair){
             $vars['exchange_pairs'][$exchange_pair->exchange_id][] = $exchange_pair->exchange_pair;
         }
 
         foreach ($exchanges as $ex_id) {
-            $exch = bh_exchanges::where('id','=', $ex_id)->first();
+            $exch = BhExchanges::where('id','=', $ex_id)->first();
             $exname = $exch->exchange;
             $vars['e'] = $vars['e'] ?? $ex_id;
             if ($exname == 'Global Digital Asset Exchange') {
