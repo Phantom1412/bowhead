@@ -5,7 +5,7 @@ namespace Bowhead\Console\Commands;
 use AndreasGlaser\PPC\PPC;
 use Bowhead\Traits\OHLC;
 use Bowhead\Util\Whaleclub;
-use Bowhead\Util\Bitfinex;
+// use Bowhead\Util\Bitfinex;
 use Bowhead\Util\Candles;
 // use Bowhead\Util\Coinbase;
 use Bowhead\Util\Indicators;
@@ -68,7 +68,7 @@ class ExampleUsageCommand extends Command
         // $onebroker = new OneBroker();
         // $cointbase = new Coinbase();
         $poloniex  = new PPC(env('POLONIEX_API'), env('POLONIEX_SECRET'));
-        $bitfinex  = new Bitfinex(env('BITFINIX_KEY'),env('BITFINIX_SECRET'));
+        // $bitfinex  = new Bitfinex(env('BITFINIX_KEY'),env('BITFINIX_SECRET'));
 
         $stop = $warn = false;
 
@@ -112,14 +112,14 @@ class ExampleUsageCommand extends Command
         //     echo $console->tableFormatArray(array_dot($account));
         // }
 
-        if (empty(env('BITFINIX_KEY'))) {
-            echo $console->colorize("\nSign up for a Bitfinex account: https://www.bitfinex.com",'red');
-            $stop = true;
-        } else {
-            $account = $bitfinex->account_info();
-            echo $console->colorize("Bitfinex\n");
-            echo $console->tableFormatArray(array_dot($account));
-        }
+        // if (empty(env('BITFINIX_KEY'))) {
+        //     echo $console->colorize("\nSign up for a Bitfinex account: https://www.bitfinex.com",'red');
+        //     $stop = true;
+        // } else {
+        //     $account = $bitfinex->account_info();
+        //     echo $console->colorize("Bitfinex\n");
+        //     echo $console->tableFormatArray(array_dot($account));
+        // }
 
         if (empty(env('OANDA_TOKEN'))) {
             echo $console->colorize("\nSign up for a Oanda account: https://www.oanda.com/",'red');
