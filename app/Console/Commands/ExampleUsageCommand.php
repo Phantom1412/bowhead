@@ -7,7 +7,7 @@ use Bowhead\Traits\OHLC;
 use Bowhead\Util\Whaleclub;
 use Bowhead\Util\Bitfinex;
 use Bowhead\Util\Candles;
-use Bowhead\Util\Coinbase;
+// use Bowhead\Util\Coinbase;
 use Bowhead\Util\Indicators;
 use Bowhead\Util\Oanda;
 use Bowhead\Util\Other;
@@ -66,7 +66,7 @@ class ExampleUsageCommand extends Command
         /** instantiate all the brokerages */
         $whaleclub = new Whaleclub('BTC/USD');
         // $onebroker = new OneBroker();
-        $cointbase = new Coinbase();
+        // $cointbase = new Coinbase();
         $poloniex  = new PPC(env('POLONIEX_API'), env('POLONIEX_SECRET'));
         $bitfinex  = new Bitfinex(env('BITFINIX_KEY'),env('BITFINIX_SECRET'));
 
@@ -103,14 +103,14 @@ class ExampleUsageCommand extends Command
         //     echo $console->tableFormatArray(array_dot($account));
         // }
 
-        if (empty(env('CBKEY'))) {
-            echo $console->colorize("\nSign up for a Coinbase/GDAX account: Use https://www.coinbase.com/join/51950ca286c21b84dd000021 for bonus",'yellow');
-            $warn = true;
-        } else {
-            $account = $cointbase->getAccount();
-            echo $console->colorize("GDAX\n");
-            echo $console->tableFormatArray(array_dot($account));
-        }
+        // if (empty(env('CBKEY'))) {
+        //     echo $console->colorize("\nSign up for a Coinbase/GDAX account: Use https://www.coinbase.com/join/51950ca286c21b84dd000021 for bonus",'yellow');
+        //     $warn = true;
+        // } else {
+        //     $account = $cointbase->getAccount();
+        //     echo $console->colorize("GDAX\n");
+        //     echo $console->tableFormatArray(array_dot($account));
+        // }
 
         if (empty(env('BITFINIX_KEY'))) {
             echo $console->colorize("\nSign up for a Bitfinex account: https://www.bitfinex.com",'red');
