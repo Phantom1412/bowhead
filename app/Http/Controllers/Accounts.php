@@ -4,7 +4,6 @@ namespace Bowhead\Http\Controllers;
 
 use Bowhead\Traits\Mapper;
 use Illuminate\Http\Request;
-use Dingo\Api\Routing\Helpers;
 use Illuminate\Routing\Controller;
 
 
@@ -48,7 +47,7 @@ class Accounts extends Controller
         // TODO: Implement __debugInfo() method.
     }
 
-    public function getAccountsAction()
+    public function getAllAccounts()
     {
         if (!empty($this->errors)) {
             return $this->errors;

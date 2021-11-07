@@ -19,11 +19,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_ohlcvs extends Model
+class BhOhclvs extends Model
 {
     /**
      * @var array
      */
     protected $fillable = ['bh_exchanges_id', 'symbol', 'timestamp', 'datetime', 'open', 'high', 'low', 'close', 'volume', 'updated_at', 'created_at', 'deleted_at'];
-
 }

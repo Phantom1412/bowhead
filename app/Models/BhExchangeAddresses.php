@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_exchange_addresses extends Model
+class BhExchangeAddresses extends Model
 {
     /**
      * @var array

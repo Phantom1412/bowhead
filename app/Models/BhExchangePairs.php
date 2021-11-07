@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $exchange_id
  * @property string $exchange_pair
  */
-class bh_exchange_pairs extends Model
+class BhExchangePairs extends Model
 {
     /**
      * @var array

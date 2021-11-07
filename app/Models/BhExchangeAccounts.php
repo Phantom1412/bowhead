@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_exchange_accounts extends Model
+class BhExchangeAccounts extends Model
 {
     /**
      * @var array

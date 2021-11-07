@@ -163,8 +163,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        Dingo\Api\Provider\LaravelServiceProvider::class,
-        Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
+        // Dingo\Api\Provider\LaravelServiceProvider::class,
+        // Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
 
         /*
@@ -180,8 +180,8 @@ return [
         // Bowhead\Providers\BroadcastServiceProvider::class,
         Bowhead\Providers\EventServiceProvider::class,
         Bowhead\Providers\RouteServiceProvider::class,
-        Way\Generators\GeneratorsServiceProvider::class,
-        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+        //Way\Generators\GeneratorsServiceProvider::class,
+        //Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
     ],
 
     /*

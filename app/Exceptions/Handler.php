@@ -2,12 +2,17 @@
 
 namespace Bowhead\Exceptions;
 
-use Exception;
+use Bowhead\Traits\HandleApiException;
+use Bowhead\Traits\HandleApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use HandleApiException;
+    use HandleApiResponse;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -27,10 +32,10 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception): void
     {
         parent::report($exception);
     }
@@ -39,10 +44,10 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);
     }
@@ -57,7 +62,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return $this->UnauthorizedResponse('Unauthenticated.');
         }
 
         return redirect()->guest(route('login'));

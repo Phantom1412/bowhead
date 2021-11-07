@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_exchange_balances extends Model
+class BhExchangeBalances extends Model
 {
     /**
      * @var array

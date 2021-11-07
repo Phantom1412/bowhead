@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $deleted_at
  */
-class bh_tickers extends Model
+class BhTickers extends Model
 {
     /**
      * @var array
