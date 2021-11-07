@@ -57,6 +57,8 @@ class FxStreamCommand extends Command
 
             $data = file_get_contents('http://rates.fxcm.com/RatesXML');
             $fixed = new SimpleXMLElement($data);
+
+	        $curr = [];
             foreach ($fixed as $fx) {
                 $symbol = (string) $fx['Symbol'];
                 $symbolt = $trans[$symbol] ?? null;
@@ -68,7 +70,8 @@ class FxStreamCommand extends Command
                 $ticker['tick']['bid'] = round(((float) $fx->Bid + (float) $fx->Ask) / 2, 5);
                 $ticker['tick']['instrument'] = $symbolt;
 
-                $this->markOHLC($ticker);
+// TODO disable this old function while we check the rest of the code
+//                $this->markOHLC($ticker);
 
                 $ins = $ticker['tick']['instrument'];
                 $curr[$ins] = $ticker['tick']['bid'];
@@ -82,11 +85,12 @@ class FxStreamCommand extends Command
                         $output[$instrument] = $console->colorize(str_pad($instrument . " " . round($curr[$instrument], 3), 14), 'none');
                     }
                 }
-                $last = $curr;
+
             }
+	        $last = $curr;
 
             // for cool output uncomment
-            #echo join(' | ', $output) ."\n";
+            echo join(' | ', $output) ."\n";
             sleep(12);
         }
     }

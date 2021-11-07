@@ -159,7 +159,7 @@ trait Strategies
         $fsar   = $indicators->fsar($pair, $data); // custom sar for forex
         $stoch  = $indicators->stoch($pair, $data);
         $stochf = $indicators->stochf($pair, $data);
-        $stochs = (($stoch == -1 || $stochf == -1) ? -1 : ( ($stoch == 1 || $stochf == 1) ? 1 : 0) );
+//        $stochs = (($stoch == -1 || $stochf == -1) ? -1 : ( ($stoch == 1 || $stochf == 1) ? 1 : 0) );
         if ($fsar == -1 && ($stoch == -1 || $stochf == -1)) {
             $return['side']     = 'short';
             $return['strategy'] = 'sar_stoch';

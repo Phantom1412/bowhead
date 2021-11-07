@@ -46,29 +46,40 @@ class SignalsExampleCommand extends Command {
      *
      *  this is the part of the command that executes.
      */
-    public function handle()
-    {
+    public function handle() {
         echo "PRESS 'q' TO QUIT AND CLOSE ALL POSITIONS\n\n\n";
         stream_set_blocking(STDIN, 0);
 
-        while(1){
-			$instruments = ['BTC/USD'];
+        while(1) {
+			$instruments = ['BTC/USD','ETH/BTC','LTC/BTC'];
 			
-			$util        = new Util\BrokersUtil();
-			$console     = new \Bowhead\Util\Console();
-			$indicators  = new \Bowhead\Util\Indicators();
+//			$util        = new Util\BrokersUtil();
+//			$console     = new \Bowhead\Util\Console();
+//			$indicators  = new \Bowhead\Util\Indicators();
 
 			$this->signals(false, false, $instruments);
-
 			$back = $this->signals(1,2, $instruments);
-			print_r($back);
+
+	        foreach ($back as $k => $val) {
+
+	        	if ($val !== 'NONE') {
+			        DB::table('bh_indicators')->insert([
+				        ['pair' => $k,
+				        'signal' => $val,
+				        'inserted' => now()]
+				        ]);
+		        } // if
+
+		        echo $k." ".$val."\n";
+	        } // foreach
+	        echo "------------------------------------------------\n\n";
+//			print_r($back);
 
 			sleep(5);
-		}
-
+		} // while
 
         return null;
-    }
+    } // handle
 
 
 }

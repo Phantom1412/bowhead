@@ -103,8 +103,7 @@ class DataRunnerCcxtCommand extends Command
      *
      * @return void
      */
-    public function handle()
-    {
+    public function handle() {
         /**
          *  DON'T RUN IF WE ARE CURRENTLY USING COINIGY
          *  This is typically because coinigy does not require that Bowhead have API keys and API secrets..
@@ -160,7 +159,7 @@ class DataRunnerCcxtCommand extends Command
              *  Update the list of pairs available to trade
              *  We skip ones with use=-1 as they are either broke or have issues.
              */
-            $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+            $ex_loop = Models\bh_exchanges::where('ccxt',1)->where('use',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
@@ -189,7 +188,7 @@ class DataRunnerCcxtCommand extends Command
          *  Do class instantiation here to avoid doing it in the loop which
          *  adds to memory on each loop for the system try/catch
          */
-        $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+        $ex_loop = Models\bh_exchanges::where('ccxt',1)->where('use',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
         foreach ($ex_loop as $ex) {
             $exid = $ex->id;
             $exchange = $ex->exchange;
@@ -215,7 +214,8 @@ class DataRunnerCcxtCommand extends Command
                 echo "QUIT detected...";
                 return null;
             }
-            $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+            $ex_loop = Models\bh_exchanges::where('ccxt',1)->where('use',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
@@ -231,19 +231,24 @@ class DataRunnerCcxtCommand extends Command
                         'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
                     ));
                     $class = ${'bh_' . $exchange};
+
                 }
 
                 try {
                     #$markets = $class->load_markets();
                     foreach ($trading_pairs as $pair) {
+
                         if ($ex->hasFetchTickers) {
                             $tick = $class->fetchTicker($pair);
+
                             unset($tick['info']);
+
                             $dt = explode('.', $tick['datetime']);
-                            $tick['timestamp'] = (intval($tick['timestamp']) / 1000);
+//                            TODO this timestamp is really bad it takes -2 Hour behind so we gona use the date instead
+//                            $tick['timestamp'] = (intval($tick['timestamp']) / 1000);
+	                        $tick['timestamp'] = strtotime($dt[0]);
                             $tick['bh_exchanges_id'] = $exid;
                             $tick['datetime'] = $dt[0];
-
                             $tick['basevolume'] = $tick['baseVolume'];
                             unset($tick['baseVolume']);
                             $tick['quotevolume'] = $tick['quoteVolume'];

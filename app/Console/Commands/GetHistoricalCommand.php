@@ -27,9 +27,9 @@ class GetHistoricalCommand extends Command {
     /**
      *  do it..
      */
-    public function fire()
+    public function handle()
     {
-        $util = new \Bowhead\Util\Util();
+//        $util = new \Bowhead\Util\Util();
         $console = new \Bowhead\Util\Console();
         $ledger = new \Bowhead\Util\Coinbase();
 
@@ -39,7 +39,8 @@ class GetHistoricalCommand extends Command {
         $date_list = array();
         $day1 = '2017-04-18';
         $diff1Day = new DateInterval('P1D');
-        $day = new DateTime('2017-05-01 00:00:00');
+        $today = date('Y-m-d');
+        $day = new DateTime($today.' 00:00:00');
         while($day1 <= date('Y-m-d')) {
             $day1 = date("Y-m-d", $day->getTimestamp());
             $day->add($diff1Day);
@@ -50,9 +51,9 @@ class GetHistoricalCommand extends Command {
             foreach ($date_list as $key => $val) {
                 sleep(1); // otherwise will get rate limited
                 echo "Doing $pair $key / $val\n";
-                $linkpart = "?start=" . $key . "T00:00:00.000Z&&end=" . $val . "T00:00:00.000Z&&granularity=3600";
-                $data = $util->get_endpoint('rates', null, $linkpart, $pair);
-                #echo "got $pair: $key / $val\n";
+//                $linkpart = "?start=" . $key . "T00:00:00.000Z&&end=" . $val . "T00:00:00.000Z&&granularity=3600";
+                $data = $ledger->get_endpoint('rates', null, null, $pair);
+                echo "got $pair: $key / $val\n";
                 foreach ($data as $d) {
                     if (!is_array($d)) {
                         continue;

@@ -8,7 +8,7 @@
 namespace Bowhead\Util;
 
 use Bowhead\Traits\OHLC;
-use Bowhead\Util\Util;
+use Bowhead\Util\BrokersUtil;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -35,6 +35,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
  *          volatility indicators: ATR,NATR,TRANGE
  *          cycle indicators: HT_DCPERIOD,HT_DCPHASE,HT_PHASOR,HT_SINE,HT_TRENDMODE
  */
+const TRADER_MA_TYPE_SMA = 8; // Setting 5 as SMA as we wish to go on tight lookup
+
+
 class Indicators
 {
     use OHLC;
@@ -310,7 +313,7 @@ class Indicators
         #$current = array_pop($data2['close']); #$data['close'][count($data['close']) - 1];    // we assume this is current
         #$prev_close = array_pop($data2['close']); #$data['close'][count($data['close']) - 2]; // prior close
 
-        $rsi = trader_rsi ($data['close'], $period);
+        $rsi = trader_rsi($data['close'], $period);
         $rsi = array_pop($rsi);
 
         # RSI is above 70 and we own, sell
@@ -349,9 +352,10 @@ class Indicators
         if (empty($data['high'])) {
             return 0;
         }
+//	    var_dump($data);
         #$prev_close = $data['close'][count($data['close']) - 2]; // prior close
         #$current = $data['close'][count($data['close']) - 1];    // we assume this is current
-
+//	    var_dump($data);
         #high,low,close, fastk_period, slowk_period, slowk_matype, slowd_period, slowd_matype
         $stoch = trader_stoch($data['high'], $data['low'], $data['close'], 13, 3, $matype1, 3, $matype2);
         $slowk = $stoch[0];
@@ -605,8 +609,10 @@ class Indicators
         if (empty($data['high'])) {
             return 0;
         }
+
         # array $high , array $low [, float $acceleration [, float $maximum ]]
         $_sar = trader_sar($data['high'], $data['low'], $acceleration, $maximum);
+
         $current_sar = (float) array_pop($_sar);
         $prior_sar   = (float) array_pop($_sar);
         $prev_sar    = (float) array_pop($_sar);
@@ -644,8 +650,9 @@ class Indicators
         $prior_red_candle   = ($prev_red_candle || $prior_red_candle ? true : false);
         $prior_green_candle = ($prev_green_candle || $prior_green_candle ? true : false);
 
-        // TODO this is useful for testing
-        /**
+	    // TODO this is useful for testing
+	    $console = new Console();
+
         $line = "";
         $line .= "(" . ($prior_above        ? $console->colorize('prior_above', 'light_green') : $console->colorize('prior_above', 'dark'));
         $line .= " " . ($prior_red_candle   ? $console->colorize('prior_red', 'light_green')   : $console->colorize('prior_red', 'dark'));
@@ -657,8 +664,7 @@ class Indicators
         $line .= " " . ($above              ? $console->colorize('above', 'light_red')         : $console->colorize('above', 'dark'));
         $line .= " " . ($red_candle         ? $console->colorize('red', 'light_red')           : $console->colorize('red', 'dark'));
         $line .= ")";
-        echo "\n$line";
-        //*/
+        echo "$line";
 
         if (($prior_above && $prior_red_candle) && ($below && $green_candle)) {
             /** SAR is below a NEW green candle. */
@@ -1073,6 +1079,7 @@ class Indicators
         if (empty($data)) {
             $data = $this->getRecentData($pair);
         }
+//        TODO this function expects 1 parameter 2 given!
         $hts = trader_ht_sine($data['open'],$data['close']);
         $dcsine     = array_pop($hts[1]);
         $p_dcsine   = array_pop($hts[1]);
