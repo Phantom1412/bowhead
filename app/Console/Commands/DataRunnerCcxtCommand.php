@@ -160,7 +160,7 @@ class DataRunnerCcxtCommand extends Command
              *  Update the list of pairs available to trade
              *  We skip ones with use=-1 as they are either broke or have issues.
              */
-            $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
@@ -171,7 +171,7 @@ class DataRunnerCcxtCommand extends Command
                     echo "updating $exchange data\n";
                     $markets = $class->load_markets();
                     foreach (array_keys($markets) as $pair) {
-                        $pair_model = new Models\bh_exchange_pairs();
+                        $pair_model = new Models\BhExchangePairs();
                         $pair_model::updateOrCreate(['exchange_id' => $exid, 'exchange_pair' => $pair]);
                     }
                     $markets = [];
@@ -189,7 +189,7 @@ class DataRunnerCcxtCommand extends Command
          *  Do class instantiation here to avoid doing it in the loop which
          *  adds to memory on each loop for the system try/catch
          */
-        $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+        $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
         foreach ($ex_loop as $ex) {
             $exid = $ex->id;
             $exchange = $ex->exchange;
@@ -215,7 +215,7 @@ class DataRunnerCcxtCommand extends Command
                 echo "QUIT detected...";
                 return null;
             }
-            $ex_loop = Models\bh_exchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
@@ -248,7 +248,7 @@ class DataRunnerCcxtCommand extends Command
                             unset($tick['baseVolume']);
                             $tick['quotevolume'] = $tick['quoteVolume'];
                             unset($tick['quoteVolume']);
-                            $tickers_model = new Models\bh_tickers();
+                            $tickers_model = new Models\BhTickers();
 
                             $tickers_model::updateOrCreate(
                                 ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $tick['timestamp']]
@@ -256,7 +256,7 @@ class DataRunnerCcxtCommand extends Command
                         }
                         if ($ex->hasFetchOHLCV) {
                             $ohlcc = $class->fetchOHLCV($pair, '1m', ($carbon->now()->subMinutes(5)->timestamp*1000), 3);
-                            $ohlc_model = new Models\bh_ohlcvs();
+                            $ohlc_model = new Models\BhOhclvs();
                             foreach($ohlcc as $oh){
                                 $ins = [];
                                 $ins['bh_exchanges_id'] = $exid;

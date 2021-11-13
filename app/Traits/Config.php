@@ -23,7 +23,7 @@ trait Config
      */
     public static function bowhead_config($val) {
         try {
-            $ret = Models\bh_configs::firstorcreate(['item' => $val]); #Models\bh_configs::where('item', '=', $val)->first();
+            $ret = Models\BhConfigs::firstorcreate(['item' => $val]); #Models\bh_configs::where('item', '=', $val)->first();
             if (empty($ret->value)){
                 $ret = env($val);
                 if (!empty($ret)){
