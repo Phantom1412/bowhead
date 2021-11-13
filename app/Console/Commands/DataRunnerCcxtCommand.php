@@ -153,7 +153,7 @@ class DataRunnerCcxtCommand extends Command
                 $ins['hasFetchOHLCV'] = $class->hasFetchOHLCV ?? 1;
                 $ins['data'] = json_encode($class->markets_by_id,1);
 
-                $exchange_model = new Models\bh_exchanges();
+                $exchange_model = new Models\BhExchanges();
                 $exchange_model::updateOrCreate(['exchange' => $exchange], $ins);
             }
             /**
