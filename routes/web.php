@@ -23,3 +23,5 @@ Route::post('/exchanges', 'Controller@exchanges');
 Route::get('/exchanges', 'Controller@exchanges');
 Route::post('/main', 'Main@main');
 Route::get('/main', 'Main@main');
+
+Route::get('/test', 'Main@test');

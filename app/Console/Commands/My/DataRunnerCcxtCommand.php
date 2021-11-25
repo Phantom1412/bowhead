@@ -6,9 +6,8 @@ use Bowhead\Models;
 use Bowhead\Traits;
 use Bowhead\Util\Console;
 use Carbon\Carbon;
+use ccxt;
 use ccxt\BaseError;
-use ccxt\bitfinex;
-use ccxt\gdax;
 use Illuminate\Console\Command;
 use ccxt\AuthenticationError;
 use Bowhead\Traits\Config;
@@ -91,65 +90,52 @@ class DataRunnerCcxtCommand extends Command
         }
 
         ini_set('memory_limit', '256M');
-        $console = new Console();
         stream_set_blocking(STDIN, 0);
 
         $update_all = $this->option('update');
         $verbose = $this->option('v');
         $very_verbose = $this->option('vv');
 
-        if ($verbose){$this->profile(__LINE__);}
+        if ($verbose) { $this->profile(__LINE__); }
 
+        $console = new Console();
         $trading_pairs = $this->bowhead_config('PAIRS');
         if (empty($trading_pairs)) {
             echo $console->colorize("
                 You need to add in some trading pairs in the bh_configs table.
-                This can be done by running the migrations and seeding the database.", 'bg_red', 'bold');
-            echo "\n";
-            die(1);
+                This can be done by running the migrations and seeding the database.\n", 'bg_red', 'bold');
+            return;
         }
         $trading_pairs = explode(',', $trading_pairs);
+        $trading_exchanges = explode(',', $this->bowhead_config('EXCHANGES'));
 
-        /**
-         *   FOR TESTING
-         *   USER PASSED IN --update TO REFRESH ALL THE EXCHANGES AND PAIRS
-         *   ( this is not necessary for you to do -- almost ever --, do it from the web interface )
-         */
         if ($update_all) {
-            /**
-             *  First update the exchanges
-             */
-            $exchanges = \ccxt\Exchange::$exchanges;
+            $exchanges = ccxt\Exchange::$exchanges;
             foreach ($exchanges as $exchange) {
-                $classname = '\ccxt\\' . $exchange;
+                $classname = 'ccxt\\' . $exchange;
                 $class = new $classname;
 
                 $ins = [];
                 $ins['exchange'] = $exchange;
                 $ins['hasFetchTickers'] = $class->hasFetchTickers ?? 1;
                 $ins['hasFetchOHLCV'] = $class->hasFetchOHLCV ?? 1;
-                $ins['data'] = json_encode($class->markets_by_id,1);
+                $ins['data'] = json_encode($class->markets_by_id, 1);
 
-                $exchange_model = new Models\BhExchanges();
-                $exchange_model::updateOrCreate(['exchange' => $exchange], $ins);
+                Models\BhExchanges::updateOrCreate(['exchange' => $exchange], $ins);
             }
-            /**
-             *  Update the list of pairs available to trade
-             *  We skip ones with use=-1 as they are either broke or have issues.
-             */
-            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+
+            $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
             foreach ($ex_loop as $ex) {
-                $exid = $ex->id;
                 $exchange = $ex->exchange;
 
-                $classname = '\ccxt\\' . $exchange;
+                $classname = 'ccxt\\' . $exchange;
                 $class = new $classname;
                 try {
                     echo "updating $exchange data\n";
                     $markets = $class->load_markets();
                     foreach (array_keys($markets) as $pair) {
                         $pair_model = new Models\BhExchangePairs();
-                        $pair_model::updateOrCreate(['exchange_id' => $exid, 'exchange_pair' => $pair]);
+                        $pair_model::updateOrCreate(['exchange_id' => $ex->id, 'exchange_pair' => $pair]);
                     }
                     $markets = [];
                 } catch (AuthenticationError $e) {
@@ -159,16 +145,15 @@ class DataRunnerCcxtCommand extends Command
                 }
             }
             echo "\n\nUPDATED .. run normally now\n\n";
-            die();
+            return;
         }
 
         /**
          *  Do class instantiation here to avoid doing it in the loop which
          *  adds to memory on each loop for the system try/catch
          */
-        $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+        $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
         foreach ($ex_loop as $ex) {
-            $exid = $ex->id;
             $exchange = $ex->exchange;
             $classname = '\ccxt\\' . $exchange;
             ${'bh_'.$exchange} = new $classname(array (
@@ -178,23 +163,20 @@ class DataRunnerCcxtCommand extends Command
                 'uid'      => Config::bowhead_config(strtoupper($exchange) .'_UID'),
                 'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
             ));
-            if ($verbose){echo "$exchange mem: ". $this->profile(__LINE__);}
+            if ($verbose){ echo "$exchange mem: ". $this->profile(__LINE__); }
         }
         $carbon = new Carbon();
 
-        /**
-         * enter loop with our preferred (use = 1)
-         */
         while (1) {
-            if ($verbose){$this->profile(__LINE__);}
+            if ($verbose) { $this->profile(__LINE__); }
 
             if (ord(fgetc(STDIN)) == 113) {
                 echo "QUIT detected...";
                 return null;
             }
-            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+
+            $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
             foreach ($ex_loop as $ex) {
-                $exid = $ex->id;
                 $exchange = $ex->exchange;
                 if (isset(${'bh_'.$exchange})) {
                     $class = ${'bh_' . $exchange};
@@ -211,36 +193,32 @@ class DataRunnerCcxtCommand extends Command
                 }
 
                 try {
-                    #$markets = $class->load_markets();
+                    // $markets = $class->load_markets();
                     foreach ($trading_pairs as $pair) {
                         if ($ex->hasFetchTickers) {
                             $tick = $class->fetchTicker($pair);
-                            dd($tick);
-                echo "Nani-{}";
                             unset($tick['info']);
                             $dt = explode('.', $tick['datetime']);
                             $tick['timestamp'] = (intval($tick['timestamp']) / 1000);
-                            $tick['bh_exchanges_id'] = $exid;
+                            $tick['bh_exchanges_id'] = $ex->id;
                             $tick['datetime'] = $dt[0];
 
                             $tick['basevolume'] = $tick['baseVolume'];
                             unset($tick['baseVolume']);
                             $tick['quotevolume'] = $tick['quoteVolume'];
                             unset($tick['quoteVolume']);
-                            $tickers_model = new Models\BhTickers();
 
-                            $tickers_model::updateOrCreate(
-                                ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $tick['timestamp']]
+                            Models\BhTickers::updateOrCreate(
+                                ['bh_exchanges_id' => $ex->id, 'symbol' => $pair, 'timestamp' => $tick['timestamp']]
                                 , $tick);
                         }
                         if ($ex->hasFetchOHLCV) {
                             $ohlcc = $class->fetchOHLCV($pair, '1m', ($carbon->now()->subMinutes(5)->timestamp*1000), 3);
-                            $ohlc_model = new Models\BhOhclvs();
                             foreach($ohlcc as $oh){
                                 $ins = [];
-                                $ins['bh_exchanges_id'] = $exid;
+                                $ins['bh_exchanges_id'] = $ex->id;
                                 $ins['symbol'] = $pair;
-                                $ins['timestamp'] = (intval($oh[0])/1000);
+                                $ins['timestamp'] = (intval($oh[0]) / 1000);
                                 $ins['datetime'] = $carbon->createFromTimestamp(($oh[0]/1000))->toDateTimeString();
                                 $ins['open']   = $oh[1];
                                 $ins['high']   = $oh[2];
@@ -248,28 +226,27 @@ class DataRunnerCcxtCommand extends Command
                                 $ins['close']  = $oh[4];
                                 $ins['volume'] = $oh[5];
 
-                                $ohlc_model::updateOrCreate(
-                                    ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $ins['timestamp']]
+                                Models\BhOhclvs::updateOrCreate(
+                                    ['bh_exchanges_id' => $ex->id, 'symbol' => $pair, 'timestamp' => $ins['timestamp']]
                                     , $ins);
                             }
                         }
                     }
                 } catch (\Exception $e) {
-                    if ($verbose){$this->profile(__LINE__);}
-                    if($verbose) {
+                    if ($verbose) { $this->profile(__LINE__); }
+                    if ($verbose) {
                         echo "temp issue with $exchange\n";
-                        if ($very_verbose) {
-                            echo $e;
-                        }
+                        if ($very_verbose) { echo $e; }
                     }
+
                     unset($e); // or will cause mem leak
                 } catch (AuthenticationError $e) {
                     echo "\n\t$exchange needs auth (set this exchange to -1 in the database to disable it):\n $e..\n\n";
                 } catch (BaseError $e) {
                     echo "\n\t$exchange error (set this exchange to -1 in the database to disable it):\n $e\n\n";
-                }//*/
+                }
             }
-            if($verbose) {
+            if ($verbose) {
                 echo "line: " . __LINE__ . " mem: ". $this->convert(memory_get_usage()) ." used\n";
                 echo "Sleeping\n";
             }

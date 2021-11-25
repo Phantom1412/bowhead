@@ -114,15 +114,15 @@ class DataRunnerCcxtCommand extends Command
         }
 
         ini_set('memory_limit', '256M');
-        $console = new Console();
         stream_set_blocking(STDIN, 0);
 
         $update_all = $this->option('update');
         $verbose = $this->option('v');
         $very_verbose = $this->option('vv');
 
-        if ($verbose){$this->profile(__LINE__);}
+        if ($verbose) { $this->profile(__LINE__); }
 
+        $console = new Console();
         $trading_pairs = $this->bowhead_config('PAIRS');
         if (empty($trading_pairs)) {
             echo $console->colorize("
@@ -132,6 +132,7 @@ class DataRunnerCcxtCommand extends Command
             die(1);
         }
         $trading_pairs = explode(',', $trading_pairs);
+        $trading_exchanges = explode(',', $this->bowhead_config('EXCHANGES'));
 
         /**
          *   FOR TESTING
@@ -151,7 +152,7 @@ class DataRunnerCcxtCommand extends Command
                 $ins['exchange'] = $exchange;
                 $ins['hasFetchTickers'] = $class->hasFetchTickers ?? 1;
                 $ins['hasFetchOHLCV'] = $class->hasFetchOHLCV ?? 1;
-                $ins['data'] = json_encode($class->markets_by_id,1);
+                $ins['data'] = json_encode($class->markets_by_id, 1);
 
                 $exchange_model = new Models\BhExchanges();
                 $exchange_model::updateOrCreate(['exchange' => $exchange], $ins);
@@ -160,7 +161,7 @@ class DataRunnerCcxtCommand extends Command
              *  Update the list of pairs available to trade
              *  We skip ones with use=-1 as they are either broke or have issues.
              */
-            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+            $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
@@ -189,7 +190,7 @@ class DataRunnerCcxtCommand extends Command
          *  Do class instantiation here to avoid doing it in the loop which
          *  adds to memory on each loop for the system try/catch
          */
-        $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+        $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
         foreach ($ex_loop as $ex) {
             $exid = $ex->id;
             $exchange = $ex->exchange;
@@ -201,7 +202,7 @@ class DataRunnerCcxtCommand extends Command
                 'uid'      => Config::bowhead_config(strtoupper($exchange) .'_UID'),
                 'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
             ));
-            if ($verbose){echo "$exchange mem: ". $this->profile(__LINE__);}
+            if ($verbose){ echo "$exchange mem: ". $this->profile(__LINE__); }
         }
         $carbon = new Carbon();
 
@@ -209,13 +210,14 @@ class DataRunnerCcxtCommand extends Command
          * enter loop with our preferred (use = 1)
          */
         while (1) {
-            if ($verbose){$this->profile(__LINE__);}
+            if ($verbose) { $this->profile(__LINE__); }
 
             if (ord(fgetc(STDIN)) == 113) {
                 echo "QUIT detected...";
                 return null;
             }
-            $ex_loop = Models\BhExchanges::where('ccxt',1)->whereIn('id', explode(",", $this->bowhead_config('EXCHANGES')))->get();
+
+            $ex_loop = Models\BhExchanges::where('ccxt', 1)->whereIn('id', $trading_exchanges)->get();
             foreach ($ex_loop as $ex) {
                 $exid = $ex->id;
                 $exchange = $ex->exchange;
