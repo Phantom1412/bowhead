@@ -1,19 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: joeldg
- * Date: 12/21/17
- * Time: 9:22 PM
- *
- * This command updaes the bh_ohlcvs and bh_tickers tables, additionally it can repop the exchanges and pairs data
- * to repopulate everything call with --update, if there are any new ones to add, this will add them.
- * It does not handle deletions, so. beware of that.
- *
- * For FX data
- * https://www.truefx.com/dev/data/TrueFX_MarketDataWebAPI_DeveloperGuide.pdf
- *
- */
-namespace Bowhead\Console\Commands;
+ 
+namespace Bowhead\Console\Commands\My;
 
 use Bowhead\Models;
 use Bowhead\Traits;
@@ -97,18 +84,8 @@ class DataRunnerCcxtCommand extends Command
         return;
     }
 
-
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
     public function handle()
     {
-        /**
-         *  DON'T RUN IF WE ARE CURRENTLY USING COINIGY
-         *  This is typically because coinigy does not require that Bowhead have API keys and API secrets..
-         */
         if ($this->bowhead_config('COINIGY') == 1) {
             exit(1);
         }
@@ -238,6 +215,8 @@ class DataRunnerCcxtCommand extends Command
                     foreach ($trading_pairs as $pair) {
                         if ($ex->hasFetchTickers) {
                             $tick = $class->fetchTicker($pair);
+                            dd($tick);
+                echo "Nani-{}";
                             unset($tick['info']);
                             $dt = explode('.', $tick['datetime']);
                             $tick['timestamp'] = (intval($tick['timestamp']) / 1000);

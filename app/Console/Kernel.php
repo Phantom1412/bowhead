@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         Commands\RandomWalkCommand::class,
         //Stream::class,
 		#Commands\KrakenStreamCommand::class,
+        
+        Commands\My\TestStrategiesCommand::class,
     ];
 
     /**

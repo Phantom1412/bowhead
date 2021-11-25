@@ -4,13 +4,10 @@ namespace Bowhead\Http\Controllers;
 
 use Bowhead\Models\BhExchangePairs;
 use Bowhead\Models\BhExchanges;
-use Bowhead\Traits\Config;
-use Bowhead\Traits\OHLC;
 use Illuminate\Http\Request;
 
 class Main extends Controller
 {
-    use OHLC;
 
     public function main(Request $request)
     {
