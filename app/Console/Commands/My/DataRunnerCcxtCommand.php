@@ -26,12 +26,12 @@ class DataRunnerCcxtCommand extends Command
      *
      * @var string
      */
-    protected $name = 'bowhead:datarunner_ccxt';
+    protected $name = 'my:datarunner_ccxt';
 
     /**
      * @var string
      */
-    protected $signature = 'bowhead:datarunner_ccxt {--update} {--v} {--vv}';
+    protected $signature = 'my:datarunner_ccxt {--update} {--v} {--vv}';
 
     /**
      * @var int
