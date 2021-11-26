@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         //Stream::class,
 		#Commands\KrakenStreamCommand::class,
         
+        Commands\My\DataRunnerCcxtCommand::class,
         Commands\My\TestStrategiesCommand::class,
     ];
 

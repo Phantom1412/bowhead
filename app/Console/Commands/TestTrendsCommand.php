@@ -2,6 +2,7 @@
 
 namespace Bowhead\Console\Commands;
 
+use Bowhead\Traits\Config;
 use Bowhead\Traits\OHLC;
 use Bowhead\Util\Console;
 use Bowhead\Util\Indicators;
@@ -9,7 +10,7 @@ use Illuminate\Console\Command;
 
 class TestTrendsCommand extends Command
 {
-    use OHLC;
+    use OHLC, Config;
     /**
      * The name and signature of the console command.
      *
