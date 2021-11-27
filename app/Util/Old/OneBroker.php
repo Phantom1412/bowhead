@@ -6,7 +6,7 @@
  * Time: 6:53 PM
  */
 
-namespace Bowhead\Util;
+namespace Bowhead\Util\Old;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,8 @@ use DateTime;
  *          One Broker API wrapper..
  *          https://1broker.com/?c=en/content/api-documentation
  */
-class OneBroker {
+class OneBroker
+{
     /**
      * @var mixed
      */

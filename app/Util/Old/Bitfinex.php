@@ -6,7 +6,7 @@
 # bot within this system.
 #
 
-namespace Bowhead\Util;
+namespace Bowhead\Util\Old;
 
 /**
  * Class Bitfinex
@@ -14,7 +14,8 @@ namespace Bowhead\Util;
  *
  *              Streaming is a different animal and done via the command.
  */
-class Bitfinex{
+class Bitfinex
+{
   private $apikey;
   private $secret;
   private $url = "https://api.bitfinex.com";

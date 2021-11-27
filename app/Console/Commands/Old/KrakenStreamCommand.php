@@ -1,6 +1,6 @@
 <?php
 
-namespace Bowhead\Console\Commands;
+namespace Bowhead\Console\Commands\Old;
 
 use Bowhead\Traits\OHLC;
 use Bowhead\Util\Console;
@@ -18,7 +18,8 @@ use Illuminate\Console\Command;
  * @copyright 2017 Lukas Kremsmayr
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class KrakenStreamCommand extends Command {
+class KrakenStreamCommand extends Command
+{
 	use OHLC;
 	/**
 	 * The name and signature of the console command.

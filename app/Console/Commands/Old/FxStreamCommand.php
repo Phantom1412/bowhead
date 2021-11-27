@@ -1,5 +1,5 @@
 <?php
-namespace Bowhead\Console\Commands;
+namespace Bowhead\Console\Commands\Old;
 
 use Bowhead\Traits\OHLC;
 use Bowhead\Util\Console;

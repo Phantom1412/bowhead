@@ -1,6 +1,6 @@
 <?php
 
-namespace Bowhead\Util;
+namespace Bowhead\Util\Old;
 /**
  * Reference implementation for Kraken's REST API.
  *
@@ -29,8 +29,6 @@ namespace Bowhead\Util;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-class KrakenAPIException extends \ErrorException {};
 
 class KrakenAPI
 {

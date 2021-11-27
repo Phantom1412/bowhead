@@ -5,7 +5,7 @@
  * Date: 6/25/17
  * Time: 12:57 PM
  */
-namespace Bowhead\Console\Commands;
+namespace Bowhead\Console\Commands\Old;
 
 use Bowhead\Console\Kernel;
 use Bowhead\Util\Coinbase;
@@ -24,7 +24,8 @@ use Illuminate\Console\Command;
  *
  *          Then match this up with the proper sequence
  */
-class WebsocketCoinbaseTestCommand extends Command {
+class WebsocketCoinbaseTestCommand extends Command
+{
 
     /**
      * The console command name.

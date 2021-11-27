@@ -6,7 +6,7 @@
  * Time: 10:49 PM
  */
 
-namespace Bowhead\Util;
+namespace Bowhead\Util\Old;
 
 use Bowhead\Util\BrokersUtil;
 use Webpatser\Uuid;
