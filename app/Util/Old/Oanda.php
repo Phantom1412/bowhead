@@ -1,5 +1,5 @@
 <?php
-namespace Bowhead\Util;
+namespace Bowhead\Util\Old;
 /**
  *  Modified by joeldg to work in bowhead boilerplate
  *  SEE https://github.com/tavurth/OandaWrap for instructions on use.
@@ -47,7 +47,8 @@ if (defined('TAVURTH_OANDAWRAP') === FALSE) {
 	//
 	//////////////////////////////////////////////////////////////////////////////////
 
-	class Oanda {
+	class Oanda
+	{
 		protected static $baseUrl;
 		protected static $account;
 		protected static $apiKey;

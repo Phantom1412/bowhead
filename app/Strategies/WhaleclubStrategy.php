@@ -6,7 +6,8 @@
  * Time: 9:36 PM
  */
 
-namespace Bowhead\Strategy;
+namespace Bowhead\Strategies;
+
 use Bowhead\Util;
 
 /**
@@ -25,7 +26,7 @@ use Bowhead\Util;
  *              use Bowhead\Util Math class for all math functions not in trader extension.
  *
  */
-class whaleclubStrategy
+class WhaleclubStrategy
 {
     /**
      * Instrument = BTC_USD, ETH_USD and so on.

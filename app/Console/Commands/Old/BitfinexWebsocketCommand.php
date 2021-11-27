@@ -1,6 +1,6 @@
 <?php
 
-namespace Bowhead\Console\Commands;
+namespace Bowhead\Console\Commands\Old;
 
 use Bowhead\Util\Console;
 use Illuminate\Console\Command;
