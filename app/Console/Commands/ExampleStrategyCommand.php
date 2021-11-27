@@ -13,7 +13,7 @@ use AndreasGlaser\PPC\PPC; // https://github.com/andreas-glaser/poloniex-php-cli
  * Class ExampleCommand
  * @package Bowhead\Console\Commands
  */
-class ExampleCommand extends Command
+class ExampleStrategyCommand extends Command
 {
     use OHLC;
 
