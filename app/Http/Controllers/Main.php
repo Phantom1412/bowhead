@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class Main extends Controller
 {
+    public function test(Request $request)
+    {
+    }
 
     public function main(Request $request)
     {
