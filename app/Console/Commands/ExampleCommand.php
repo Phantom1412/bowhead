@@ -31,7 +31,7 @@ class ExampleCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'bowhead:example_usage';
+    protected $signature = 'bowhead:example';
 
     /**
      * The console command description.
