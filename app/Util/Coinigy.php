@@ -6,6 +6,8 @@
  * Time: 1:00 AM
  */
 namespace Bowhead\Util;
+
+use Bowhead\Traits;
 /**
  * Class Coinigy
  * $coinigy_api = new Coinigy();
@@ -19,7 +21,7 @@ namespace Bowhead\Util;
  */
 class Coinigy
 {
-    use \Bowhead\Traits\Config;
+    use Traits\Config;
 
     /**
      * @var string
@@ -42,8 +44,8 @@ class Coinigy
     function __construct()
     {
         //see API docs for more info
-        $this->coinigy_api_key = \Bowhead\Traits\Config::bowhead_config('COINIGY_API');
-        $this->coinigy_api_secret = \Bowhead\Traits\Config::bowhead_config('COINIGY_SEC');
+        $this->coinigy_api_key = Traits\Config::bowhead_config('COINIGY_API');
+        $this->coinigy_api_secret = Traits\Config::bowhead_config('COINIGY_SEC');
         $this->endpoint = 'https://api.coinigy.com/api/v1/'; //with trailing slash
     }
 

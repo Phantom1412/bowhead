@@ -4,7 +4,7 @@ namespace Bowhead\Http\Controllers;
 
 use Bowhead\Models\BhExchangePairs;
 use Bowhead\Models\BhExchanges;
-use Bowhead\Traits\Config;
+use Bowhead\Traits;
 use Bowhead\Traits\OHLC;
 use Illuminate\Http\Request;
 
@@ -23,13 +23,13 @@ class Main extends Controller
 
         $vars['notice'] = '';
         $exs = [];
-        $exchanges = explode(',',   Config::bowhead_config('EXCHANGES'));
+        $exchanges = explode(',', Traits\Config::bowhead_config('EXCHANGES'));
         /*if (in_array(105, $exchanges)) {
             foreach($exchanges as $key => $val) {
                 $exchanges[$key] = $val == 105 ? 52 : $val;
             }
         }*/
-        $pairs = explode(',',   Config::bowhead_config('PAIRS'));
+        $pairs = explode(',', Traits\Config::bowhead_config('PAIRS'));
         $vars['p'] = $vars['p'] ?? head($pairs);
         sort($pairs);
 

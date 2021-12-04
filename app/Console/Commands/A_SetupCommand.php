@@ -3,7 +3,6 @@
 namespace Bowhead\Console\Commands;
 
 use Illuminate\Console\Command;
-use Config;
 use Illuminate\Support\Facades\DB;
 
 class A_SetupCommand extends Command
