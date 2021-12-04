@@ -61,6 +61,5 @@ class A_SetupCommand extends Command
             $this->call('db:seed');
             $this->line("Data seeded....");
         }
-
     }
 }
