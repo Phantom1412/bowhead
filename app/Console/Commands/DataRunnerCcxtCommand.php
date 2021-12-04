@@ -24,11 +24,10 @@ use ccxt\bitfinex;
 use ccxt\gdax;
 use Illuminate\Console\Command;
 use ccxt\AuthenticationError;
-use Bowhead\Traits\Config;
 
 class DataRunnerCcxtCommand extends Command
 {
-    use Config, Traits\DataCcxt;
+    use Traits\Config, Traits\DataCcxt;
 
     /**
      * @var array
@@ -197,10 +196,10 @@ class DataRunnerCcxtCommand extends Command
             $classname = '\ccxt\\' . $exchange;
             ${'bh_'.$exchange} = new $classname(array (
                 'enableRateLimit' => true,
-                'apiKey'   => Config::bowhead_config(strtoupper($exchange) .'_APIKEY'),
-                'secret'   => Config::bowhead_config(strtoupper($exchange) .'_SECRET'),
-                'uid'      => Config::bowhead_config(strtoupper($exchange) .'_UID'),
-                'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
+                'apiKey'   => Traits\Config::bowhead_config(strtoupper($exchange) .'_APIKEY'),
+                'secret'   => Traits\Config::bowhead_config(strtoupper($exchange) .'_SECRET'),
+                'uid'      => Traits\Config::bowhead_config(strtoupper($exchange) .'_UID'),
+                'password' => Traits\Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
             ));
             if ($verbose){ echo "$exchange mem: ". $this->profile(__LINE__); }
         }
@@ -227,10 +226,10 @@ class DataRunnerCcxtCommand extends Command
                     $classname = '\ccxt\\' . $exchange;
                     ${'bh_'.$exchange} = new $classname(array (
                         'enableRateLimit' => true,
-                        'apiKey'   => Config::bowhead_config(strtoupper($exchange) .'_APIKEY'),
-                        'secret'   => Config::bowhead_config(strtoupper($exchange) .'_SECRET'),
-                        'uid'      => Config::bowhead_config(strtoupper($exchange) .'_UID'),
-                        'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
+                        'apiKey'   => Traits\Config::bowhead_config(strtoupper($exchange) .'_APIKEY'),
+                        'secret'   => Traits\Config::bowhead_config(strtoupper($exchange) .'_SECRET'),
+                        'uid'      => Traits\Config::bowhead_config(strtoupper($exchange) .'_UID'),
+                        'password' => Traits\Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
                     ));
                     $class = ${'bh_' . $exchange};
                 }

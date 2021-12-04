@@ -2,7 +2,7 @@
 
 namespace Bowhead\Console\Commands;
 
-use Bowhead\Traits\Config;
+use Bowhead\Traits;
 use Bowhead\Traits\DataCoinigy;
 use Illuminate\Console\Command;
 use Bowhead\Util\Coinigy;
@@ -17,7 +17,7 @@ use Bowhead\Models;
  */
 class DataRunnerCoinigyCommand extends Command
 {
-    use DataCoinigy, Config;
+    use DataCoinigy, Traits\Config;
 
     /**
      * @var string
