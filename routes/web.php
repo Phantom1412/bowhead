@@ -19,9 +19,9 @@ Route::post('/setup2', 'Controller@setup2');
 Route::get('/setup2', 'Controller@setup2b'); // in case someone right-clicks and tries to open a url.
 Route::post('/setup3', 'Controller@setup3');
 Route::post('/setup4', 'Controller@setup4');
-Route::post('/exchanges', 'Controller@exchanges');
-Route::get('/exchanges', 'Controller@exchanges');
-Route::post('/main', 'Main@main');
-Route::get('/main', 'Main@main');
+Route::post('/exchanges', 'SetupController@exchanges');
+Route::get('/exchanges', 'SetupController@exchanges');
+Route::post('/main', 'MainController@main');
+Route::get('/main', 'MainController@main');
 
 Route::get('/test', 'Main@test');

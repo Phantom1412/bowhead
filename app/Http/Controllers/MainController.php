@@ -7,10 +7,29 @@ use Bowhead\Models\BhExchanges;
 use Bowhead\Traits;
 use Illuminate\Http\Request;
 
-class Main extends Controller
+class MainController extends Controller
 {
+    use Traits\DataCcxt;
+
     public function test(Request $request)
     {
+        $this->init_exchange('binance');
+        dd($this->exchange->symbols, 'lol');
+        
+        $orderbook = $exchange->fetch_order_book ($exchange->symbols[0]);
+        $bid = count ($orderbook['bids']) ? $orderbook['bids'][0][0] : null;
+        $ask = count ($orderbook['asks']) ? $orderbook['asks'][0][0] : null;
+        $spread = ($bid && $ask) ? $ask - $bid : null;
+        $result = array ('bid' => $bid, 'ask' => $ask, 'spread' => $spread);
+        var_dump ($exchange->id, 'market price', $result);
+        dd($this->exchange, 'lol');
+        // ${'bh_'.$exchange}->createOrder('BTC/BUSD', 'market', 'sell', amount, ...)
+
+        \Artisan::call('my:datarunner_ccxt');
+        dd(\Artisan::output(), 'lol');
+
+        // $exchanges = \ccxt\Exchange::$exchanges;
+        // dd($exchanges);
     }
 
     public function main(Request $request)
