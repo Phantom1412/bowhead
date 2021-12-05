@@ -14,8 +14,118 @@ use ccxt\BaseError;
 
 trait DataCcxt
 {
-    public function get_accounts()
+    private $exchange = null;
+
+    public $ccxt_has = array();
+
+    public function init_exchange($exchange_name)
     {
+        $exchange_name = "\ccxt\\{$exchange_name}";
+        $this->exchange = new $exchange_name (array(
+            'apiKey'    => Config::bowhead_config(strtoupper($exchange_name) . '_APIKEY'),
+            'secret'    => Config::bowhead_config(strtoupper($exchange_name) . '_SECRET'),
+            'uid'       => Config::bowhead_config(strtoupper($exchange_name) . '_UID'),
+            'password'  => Config::bowhead_config(strtoupper($exchange_name) . '_PASSWORD')
+        ));
+    }
+
+    public function ccxt_load_markets($reload = false, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_markets($params = array())
+    {
+    }
+
+    public function ccxt_fetch_currencies($params = array())
+    {
+    }
+
+    public function ccxt_fetch_ticker($symbol, $params = array())
+    {
+        return $class->fetchTicker($market);
+    }
+
+    public function ccxt_fetch_tickers($symbols, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_order_book($symbol, $limit = null, $params = array())
+    {
+        $symbol = 'ETH/BTC';
+
+        ---
+
+        {
+            'bids': [
+                [ price, amount ], // pattern 1 [ float, float ]
+                [ price, amount, id ], // pattern 2, id = some exchanges this is useless, depends
+                [ price, amount, count ], // pattern 3, count = how many orders are aggregated on each price level in bids & asks
+                [ price, amount, timestamp ], // pattern 4, timestamp = timestamp below
+                ...
+            ],
+            'asks': [
+                [ price, amount ],
+                [ price, amount ],
+                ...
+            ],
+            'symbol': 'ETH/BTC',
+            'timestamp': 1499280391811, // Unix Timestamp in milliseconds (seconds * 1000)
+            'datetime': '2017-07-05T18:47:14.692Z', // ISO8601 datetime string with milliseconds
+            'nonce': 1499280391811, // an increasing unique identifier of the orderbook snapshot
+        };
+        // The timestamp and datetime may be missing (\ ``undefined/None/null``\ ) if the exchange in question does not provide a corresponding value in the API response.
+    }
+
+    public function ccxt_fetch_ohlcv($symbol, $timeframe = '1m', $since = null, $limit = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_status($params = array())
+    {
+    }
+
+    // fetch_trades
+    
+    public function ccxt_fetch_balance($params = array())
+    {
+    }
+
+    public function ccxt_create_order($symbol, $type, $side, $amount, $price = null, $params = array())
+    {
+    }
+
+    public function ccxt_cancel_order($id, $symbol = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_order($id, $symbol = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_orders($symbol = null, $since = null, $limit = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_open_orders($symbol = null, $since = null, $limit = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_closed_orders($symbol = null, $since = null, $limit = null, $params = array())
+    {
+    }
+
+    public function ccxt_fetch_my_trades($symbol = null, $since = null, $limit = null, $params = array())
+    {
+    }
+
+    // deposit
+    
+    // withdraw
+    
+
+    public function get_accounts()
+    { 
         # TODO + balance
     }
 
@@ -119,54 +229,4 @@ trait DataCcxt
 
         }
     }
-
-    public function get_history($exchange, $market)
-    {
-        //fetchOrderBook, fetchOHLCV (fetchTrades)
-    }
-
-    public function get_ticker($exchange, $market)
-    {
-        $exchange=strtolower($exchange);
-        $classname = '\ccxt\\' . $exchange;
-        $class = new $classname (array (
-            'apiKey'   => Config::bowhead_config(strtoupper($exchange) .'_APIKEY'),
-            'secret'   => Config::bowhead_config(strtoupper($exchange) .'_SECRET'),
-            'uid'      => Config::bowhead_config(strtoupper($exchange) .'_UID'),
-            'password' => Config::bowhead_config(strtoupper($exchange) .'_PASSWORD')
-        ));
-
-        return $class->fetchTicker($market);
-    }
-
-    public function create_order()
-    {
-        // createLimitBuyOrder, createLimitSellOrder
-        // createMarketBuyOrder, createMarketSellOrder
-        // cancelOrder
-        // fetchOrder, fetchOrders, fetchOpenOrders, fetchClosedOrders
-        // fetchMyTrades
-        // deposit, withdraw
-    }
-
-    public function cancel_order()
-    {
-        # TODO
-    }
-
-    public function get_orders()
-    {
-        # TODO - both open and closed/history
-    }
-
-    public function update_orders()
-    {
-        # TODO
-    }
-
-    public function get_orderbook()
-    {
-        #TODO - bids/asks
-    }
-
 }
