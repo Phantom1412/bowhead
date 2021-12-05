@@ -44,11 +44,6 @@ class MainController extends Controller
         $vars['notice'] = '';
         $exs = [];
         $exchanges = explode(',', Traits\Config::bowhead_config('EXCHANGES'));
-        /*if (in_array(105, $exchanges)) {
-            foreach($exchanges as $key => $val) {
-                $exchanges[$key] = $val == 105 ? 52 : $val;
-            }
-        }*/
         $pairs = explode(',', Traits\Config::bowhead_config('PAIRS'));
         $vars['p'] = $vars['p'] ?? head($pairs);
         sort($pairs);
@@ -80,12 +75,8 @@ class MainController extends Controller
                 $vars['pairs'][] = $pair;
             }
         }
-        print_r($pairs);
-
-
-
         $vars['data'] = '';
 
-        return view('main', $vars);
+        return view('public.main', $vars);
     }
 }

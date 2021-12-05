@@ -14,14 +14,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/setup',   'Controller@setup');
+Route::get('/setup', 'Controller@setup');
 Route::post('/setup2', 'Controller@setup2');
 Route::get('/setup2', 'Controller@setup2b'); // in case someone right-clicks and tries to open a url.
 Route::post('/setup3', 'Controller@setup3');
 Route::post('/setup4', 'Controller@setup4');
-Route::post('/exchanges', 'SetupController@exchanges');
-Route::get('/exchanges', 'SetupController@exchanges');
-Route::post('/main', 'MainController@main');
-Route::get('/main', 'MainController@main');
 
-Route::get('/test', 'Main@test');
+Route::get('/main', 'MainController@main');
+Route::get('/exchanges', 'SetupController@exchanges');
+Route::post('/settings', 'SettingController@create');
+Route::get('/settings', 'SettingController@store');
+
+Route::get('/test', 'MainController@test');

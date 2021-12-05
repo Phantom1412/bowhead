@@ -28,4 +28,9 @@ class BhExchanges extends Model
      */
     protected $fillable = ['exchange', 'ccxt', 'coinigy', 'coinigy_id', 'coinigy_exch_code', 'coinigy_exch_fee', 'coinigy_trade_enabled', 'coinigy_balance_enabled', 'hasFetchTickers', 'hasFetchOHLCV', 'use', 'data', 'url', 'url_api', 'url_doc', 'updated_at', 'created_at', 'deleted_at'];
 
+    public function pairs()
+    {
+        return $this->hasMany(BhExchangePairs::class, 'exchange_id', 'id');
+    }
+
 }

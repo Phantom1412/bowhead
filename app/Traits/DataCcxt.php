@@ -54,9 +54,9 @@ trait DataCcxt
     {
         $symbol = 'ETH/BTC';
 
-        ---
+        // ---
 
-        {
+        "{
             'bids': [
                 [ price, amount ], // pattern 1 [ float, float ]
                 [ price, amount, id ], // pattern 2, id = some exchanges this is useless, depends
@@ -74,7 +74,7 @@ trait DataCcxt
             'datetime': '2017-07-05T18:47:14.692Z', // ISO8601 datetime string with milliseconds
             'nonce': 1499280391811, // an increasing unique identifier of the orderbook snapshot
         };
-        // The timestamp and datetime may be missing (\ ``undefined/None/null``\ ) if the exchange in question does not provide a corresponding value in the API response.
+        // The timestamp and datetime may be missing (\ ``undefined/None/null``\ ) if the exchange in question does not provide a corresponding value in the API response.";
     }
 
     public function ccxt_fetch_ohlcv($symbol, $timeframe = '1m', $since = null, $limit = null, $params = array())
