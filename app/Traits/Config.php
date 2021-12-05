@@ -21,7 +21,8 @@ trait Config
      *
      * @return bool|\Illuminate\Database\Eloquent\Model|mixed|null|string|static
      */
-    public static function bowhead_config($val) {
+    public static function bowhead_config($val)
+    {
         try {
             $ret = Models\BhConfigs::firstorcreate(['item' => $val]); #Models\bh_configs::where('item', '=', $val)->first();
             if (empty($ret->value)){
@@ -37,6 +38,5 @@ trait Config
         } catch (\Exception $e) {
             return false;
         }
-
     }
 }
