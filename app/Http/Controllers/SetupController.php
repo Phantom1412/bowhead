@@ -186,7 +186,12 @@ class SetupController extends Controller
         /** CCXT */
         } else {
             $vars['datasource'] = 'CCXT';
-            $preferred_exchanges = BhPopularExchanges::where('ccxt', 1)->get();
+            $selected_exchanges = explode(',', Traits\Config::bowhead_config('EXCHANGES'));
+            if (count($selected_exchanges)) {
+                $preferred_exchanges = BhPopularExchanges::whereIn('exch_id', $selected_exchanges)->get();
+            } else {
+                $preferred_exchanges = BhPopularExchanges::where('ccxt', 1)->get();
+            }
             foreach($preferred_exchanges as $pe) {
                 $preferred[$pe->exch_id] = $pe->link;
             }

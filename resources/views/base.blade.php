@@ -50,10 +50,13 @@
         }
         a { color: #FF0000; }
     </style>
+    @yield('css')
 </head>
 <body>
     @yield('content')
     
+    <script src="{{ url(mix('js/app.js')) }}"></script>
+    <script src="{{ url(mix('js/vendor.js')) }}"></script>
     @yield('javascript')
 </body>
 </html>
