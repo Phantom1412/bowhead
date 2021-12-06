@@ -13,6 +13,7 @@
     <link href="/css/camphor.scss" rel="stylesheet" type="text/css">
     <link href="/css/button.scss" rel="stylesheet" type="text/css">
     <link href="/css/lit.css" rel="stylesheet" type="text/css">
+    <link href="{{ url(mix('css/app.css')) }}" rel="stylesheet" type="text/css" media="all">
 
     <!-- Styles -->
     <style>
@@ -52,5 +53,7 @@
 </head>
 <body>
     @yield('content')
+    
+    @yield('javascript')
 </body>
 </html>

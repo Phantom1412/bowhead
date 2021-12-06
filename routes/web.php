@@ -22,7 +22,7 @@ Route::post('/setup4', 'Controller@setup4');
 
 Route::get('/main', 'MainController@main');
 Route::get('/exchanges', 'SetupController@exchanges');
-Route::post('/settings', 'SettingController@create');
-Route::get('/settings', 'SettingController@store');
+Route::post('/settings', 'SettingController@store')->name('settings.store');
+Route::get('/settings', 'SettingController@create')->name('settings.create');
 
 Route::get('/test', 'MainController@test');
