@@ -35,7 +35,6 @@
 <body>
 <div class="c">
 <tr class="content">
-    <p class="err">{{ $notice }}</p>
     <h1>Bowhead setup part 2:</h1>
     <p>
         Welcome to Bowhead, this setup with help you set up Bowhead so you can get up to speed quickly.

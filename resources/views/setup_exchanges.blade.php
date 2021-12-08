@@ -34,7 +34,6 @@
 </head>
 <body>
     <div class="c">
-        <p class="err">{{ $notice }}</p>
         <h1>Bowhead setup - exchanges:</h1>
         <p>
             <br>We are done with the basic setup, your database is set up and seeded with data and you selected your data sources.

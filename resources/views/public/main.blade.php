@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="c w-100">
-    <p class="err">{{ $notice }}</p>
     <div class="row card">
         <div class="7 col">B O W H E A D</div>
         <div class="1 col"><a href="/exchanges">api keys</a></div>

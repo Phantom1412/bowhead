@@ -31,8 +31,6 @@ class SetupController extends Controller
     public function setup()
     {
         $vars = [];
-        $vars['notice'] = '';
-        $notice = '';
         $tscale = 0;
 
         if (!Schema::hasTable('bh_configs')) {
@@ -74,17 +72,10 @@ class SetupController extends Controller
                     DB::select("SELECT create_hypertable('bh_ohlcvs', 'created_at')");
                     DB::select("SELECT create_hypertable('bh_tickers', 'created_at')");
                     $tscale = 1;
-                    $notice .= "Postgres Timescale hypertables created and will be used for timeseries data.<br>\n";
-                } else {
-                    $notice .= "Postgres Timescale not installed. You won't be able to make use of hypertables.<br>\n";
                 }
             }
 
-
             Artisan::call('db:seed');
-
-            $notice .= "Noticed missing tables: Ran migrate:refresh and db:seed (you should only see this message once)<br>\n";
-            $vars['notice'] = $notice;
         }
 
         BhConfigs::updateOrCreate(['item' => 'TIMESCALEDB'], ['value' => $tscale]);
@@ -137,7 +128,7 @@ class SetupController extends Controller
                 $preferred[$pe->exch_id] = $pe->link;
             }
             if (empty($input['apikey']) || empty($input['apisecret'])) {
-                return view('setup', ['notice' => '', 'coinigy_error' => 1]);
+                return redirect()->route('setup')->withErrors('')->with('coinigy_error', 1);
             }
             BhConfigs::updateOrCreate(['item' => 'COINIGY'], ['value' => 1]);
             BhConfigs::updateOrCreate(['item' => 'COINIGY_API'], ['value' => $input['apikey']]);
@@ -159,10 +150,10 @@ class SetupController extends Controller
             $response = json_decode($response->getBody(), 1); // our list of exchanges
             if ($code <> '200') {
                 $reason = $response->getReasonPhrase();
-                return view('setup', ['notice' => $reason, 'coinigy_error' => 1]);
+                return redirect()->route('setup')->withErrors($reason)->with('coinigy_error', 1);
             }
             if (!empty($response['err_num'])) {
-                return view('setup', ['notice' => $response['err_msg'], 'coinigy_error' => 1]);
+                return redirect()->route('setup')->withErrors($response['err_msg'])->with('coinigy_error', 1);
             }
 
             $coinigy_accounts = [];
@@ -206,7 +197,6 @@ class SetupController extends Controller
         $vars['coinigy_accounts'] = $coinigy_accounts ?? '';
         $vars['exhange_links'] = $exhange_links;
         $vars['exchanges'] = $exchdata;
-        $vars['notice'] = '';
         $vars['preferred'] = $preferred;
         return view('setup2', $vars);
     }
@@ -253,12 +243,9 @@ class SetupController extends Controller
             }
         }
         ksort($pair_output);
-        $vars['notice'] = '';
         $vars['pair_output'] = $pair_output;
         $vars['pair_all'] = $pair_all;
         $vars['num_selelected'] = count($selected);
-        // just some basic preferrences for currency pairs, also make sure to add in pairs that are shared on all exchanges selected.
-        $vars['preferred'] = array_merge(['BTC/USD','BCH/USD', 'DASH/USD','DASH/BTC','ETH/USD','LTC/USD', 'DGB/BTC', 'XRP/BTC', 'XRP/USD', 'XMR/USD','XMR/BTC'], $pair_all);
         return view('setup3', $vars);
 
     }
@@ -299,7 +286,6 @@ class SetupController extends Controller
             unlink('/tmp/cron_bh_tmp');
         }
 
-        $vars['notice'] = '';
         $vars['cronlist'] = join("\n", $cronlist) ?? '';
         $vars['output'] = $output ?? '';
         $vars['cronstring'] = $cronstring;
@@ -342,7 +328,6 @@ class SetupController extends Controller
         foreach($preferred_exchanges as $pe) {
             $preferred[$pe->exch_id] = $pe->link;
         }
-        $vars['notice'] = '';
         $vars['config_names'] = $config_names;
         $vars['config_values'] = $config_values;
         $vars['preferred'] = $preferred;

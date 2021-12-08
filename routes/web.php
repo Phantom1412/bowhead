@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/setup', 'SetupController@setup');
+Route::get('/setup', 'SetupController@setup')->name('setup');
 Route::post('/setup2', 'SetupController@setup2');
 Route::get('/setup2', 'SetupController@setup2b');
 Route::post('/setup3', 'SetupController@setup3');
