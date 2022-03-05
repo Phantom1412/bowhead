@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('samantha');
 });
 Route::get('/setup', 'SetupController@setup')->name('setup');
 Route::post('/setup2', 'SetupController@setup2');
